@@ -382,6 +382,8 @@ typedef struct {
 #endif /* DRV_BYTE_ORDER */
 } mc11s_device_id_lsb_t;
 
+
+#define K                                     0.362
 /**
  * @}
  *

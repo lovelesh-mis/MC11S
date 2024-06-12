@@ -1077,7 +1077,102 @@ int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_st
 	return ret;
 }
 
+/**
+ * @brief  Calculate capacitance of ref and sensor.
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  Cref     Capacitance of reference
+ * @param  Csensor  Capacitance of sensor
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_calculate_capacitance(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
+    // C(sensor): 8.670 pf F1(ref):26.036 MHz F2(sensor):23.682 MHz VBE: 626.08 mV
+    int32_t ret;
 
+    mc11s_conv_mode_status_t val = MC11S_STOP_CONV;
+    // Step 1: Stop Conversion 
+    ret = mc11s_conv_mode_status_set(ctx, val);
+
+    // Step 2a: get ch0 & ch1 data
+    uint16_t data_ch0, data_ch1;
+
+    ret += mc11s_data_ch0_get(ctx, &data_ch0);
+
+    ret += mc11s_data_ch1_get(ctx, &data_ch1);
+
+    // Step 2b: get Fin_div
+    //uint16_t Fin_div;
+    mc11s_fin_div_val_t Fin_div_val;
+    ret += mc11s_fin_div_get(ctx, &Fin_div_val);
+
+    if (Fin_div_val > MC11S_FIN_DIV_256)
+        Fin_div_val = MC11S_FIN_DIV_256;
+
+    //Fin_div = 2 ^ Fin_div_val;
+
+    // Step 2c: get Fclk
+    uint32_t Fclk = 2400000;    // 2.4 MHz CLK
+
+    // Step 2d: get Fref_div
+    uint16_t Fref_div;
+
+    ret += mc11s_fref_div_get(ctx, (uint8_t*) &Fref_div);
+
+    //Fref_div = Fref_div + 1;    // Fref value from 1 to 256
+
+    // Step 2e: get RCNT
+    uint16_t rcnt;
+
+    ret += mc11s_rcnt_get(ctx, &rcnt);
+
+    // Step 2f: get Idrv
+    uint16_t Idrv;
+    mc11s_drive_i_status_t drive_i;
+
+    ret += mc11s_drive_i_status_get(ctx, &drive_i);
+
+    switch (drive_i) {
+        case MC11S_DRIVE_I_200uA:
+            Idrv = 200;
+            break;
+        
+        case MC11S_DRIVE_I_400uA:
+            Idrv = 400;
+            break;
+
+        case MC11S_DRIVE_I_800uA:
+            Idrv = 800;
+            break;
+
+        case MC11S_DRIVE_I_1mA6:
+            Idrv = 1600;
+            break;
+
+        case MC11S_DRIVE_I_2mA4:
+            Idrv = 2400;
+            break;
+            
+        case MC11S_DRIVE_I_3mA2_1:
+        case MC11S_DRIVE_I_3mA2_2:
+        case MC11S_DRIVE_I_3mA2_3:
+            Idrv = 3200;
+            break;
+
+        default:
+            Idrv = 0;
+            break;
+    }
+
+    // Step 3: Calculate Cref
+    // C = k * Idrv /(data_chx * Fin_div * (Fclk /(Fref_div + 1))/ RCNT)
+    *Cref = (float) (K * Idrv / (data_ch1 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
+
+    // Step 4: Calculate Csensor
+    *Csensor = (float) (K * Idrv / (data_ch0 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
+
+    return ret;
+}
 /**
  * @}
  *
