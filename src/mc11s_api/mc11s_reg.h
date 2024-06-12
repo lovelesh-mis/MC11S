@@ -304,8 +304,7 @@ typedef struct {
 #define MC11S_CFG                             0x1FU
 typedef struct {
 #if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t sd            : 1;
-  uint8_t os            : 1;
+  uint8_t os_sd         : 2;
   uint8_t cr            : 3;
   uint8_t intb_mode     : 1;
   uint8_t intb_en       : 1;
@@ -315,8 +314,7 @@ typedef struct {
   uint8_t intb_en       : 1;
   uint8_t intb_mode     : 1;
   uint8_t cr            : 3;
-  uint8_t os            : 1;
-  uint8_t sd            : 1;  
+  uint8_t os_sd         : 2;  
 #endif /* DRV_BYTE_ORDER */
 } mc11s_cfg_t;
 
@@ -481,90 +479,89 @@ typedef struct {
 } mc11s_trh_of_d_status_t;
 int32_t mc11s_trh_of_d_status_get(stmdev_ctx_t *ctx, mc11s_trh_of_d_status_t *val);
 
-int32_t mc11s_tr_set(stmdev_ctx_t *ctx, uint16_t val);
-int32_t mc11s_tr_get(stmdev_ctx_t *ctx, uint16_t *val);
+int32_t mc11s_trh_set(stmdev_ctx_t *ctx, uint8_t val);
+int32_t mc11s_trh_get(stmdev_ctx_t *ctx, uint8_t *val);
+
+int32_t mc11s_trl_set(stmdev_ctx_t *ctx, uint8_t val);
+int32_t mc11s_trl_get(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum {
-  MC11S_SEL_INT_CLK = 0x0,  MC11s_SEL_EXT_CLK = 0x1,
+  MC11S_SEL_INT_CLK = 0x0,  MC11S_SEL_EXT_CLK = 0x1,
 } mc11s_ref_clk_sel_status_t;
 int32_t mc11s_ref_clk_sel_status_set(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t val);
 int32_t mc11s_ref_clk_sel_status_get(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t *val);
 
 typedef enum {
-  MC11S_INTB_DISABLE = 0x0,  MC11s_INTB_ENABLE = 0x1,
+  MC11S_INTB_DISABLE = 0x0,  MC11S_INTB_ENABLE = 0x1,
 } mc11s_intb_en_status_t;
 int32_t mc11s_intb_en_status_set(stmdev_ctx_t *ctx, mc11s_intb_en_status_t val);
 int32_t mc11s_intb_en_status_get(stmdev_ctx_t *ctx, mc11s_intb_en_status_t *val);
 
 typedef enum {
-  MC11S_INTB_ALARM = 0x0,  MC11s_INTB_CONV = 0x1,
+  MC11S_INTB_ALARM = 0x0,  MC11S_INTB_CONV = 0x1,
 } mc11s_intb_mode_status_t;
 int32_t mc11s_intb_mode_status_set(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t val);
 int32_t mc11s_intb_mode_status_get(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t *val);
 
 typedef enum {
   MC11S_CONV_60S  = 0x0,
-  MC11s_CONV_30S  = 0x1,
-  MC11s_CONV_10S  = 0x2,
-  MC11s_CONV_5S   = 0x3,
-  MC11s_CONV_2S   = 0x4,
-  MC11s_CONV_1S   = 0x5,
-  MC11s_CONV_0S5  = 0x6,
-  MC11s_CONV_0S25 = 0x7,
+  MC11S_CONV_30S  = 0x1,
+  MC11S_CONV_10S  = 0x2,
+  MC11S_CONV_5S   = 0x3,
+  MC11S_CONV_2S   = 0x4,
+  MC11S_CONV_1S   = 0x5,
+  MC11S_CONV_0S5  = 0x6,
+  MC11S_CONV_0S25 = 0x7,
 } mc11s_conv_time_status_t;
 int32_t mc11s_conv_time_status_set(stmdev_ctx_t *ctx, mc11s_conv_time_status_t val);
 int32_t mc11s_conv_time_status_get(stmdev_ctx_t *ctx, mc11s_conv_time_status_t *val);
 
 typedef enum {
   MC11S_CONT_CONV     = 0x0,
-  MC11s_STOP_CONV     = 0x1,
-  MC11s_CONT_CONV_RB  = 0x2,
-  MC11s_SINGLE_CONV   = 0x3,
+  MC11S_STOP_CONV     = 0x1,
+  MC11S_CONT_CONV_RB  = 0x2,
+  MC11S_SINGLE_CONV   = 0x3,
 } mc11s_conv_mode_status_t;
 int32_t mc11s_conv_mode_status_set(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t val);
 int32_t mc11s_conv_mode_status_get(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t *val);
 
 typedef enum {
-  MC11S_CH0_DISABLE = 0x0,  MC11s_CH0_ENABLE = 0x1,
-} mc11s_ch0_en_status_t;
-int32_t mc11s_ch0_en_status_set(stmdev_ctx_t *ctx, mc11s_ch0_en_status_t val);
-int32_t mc11s_ch0_en_status_get(stmdev_ctx_t *ctx, mc11s_ch0_en_status_t *val);
+  MC11S_CH_DISABLE = 0x0,  MC11S_CH_ENABLE = 0x1,
+} mc11s_ch_en_status_t;
+int32_t mc11s_ch0_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val);
+int32_t mc11s_ch0_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val);
 
-typedef enum {
-  MC11S_CH1_DISABLE = 0x0,  MC11s_CH1_ENABLE = 0x1,
-} mc11s_ch1_en_status_t;
-int32_t mc11s_ch1_en_status_set(stmdev_ctx_t *ctx, mc11s_ch1_en_status_t val);
-int32_t mc11s_ch1_en_status_get(stmdev_ctx_t *ctx, mc11s_ch1_en_status_t *val);
+int32_t mc11s_ch1_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val);
+int32_t mc11s_ch1_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val);
 
 typedef enum {
   MC11S_SW_RESET = 0x7A, MC11S_RESET_COMP = 0x00,
 } mc11s_reset_status_t;
-int32_t mc11s_reset_set(stmdev_ctx_t *ctx, mc11s_reset_status_t val);
-int32_t mc11s_reset_get(stmdev_ctx_t *ctx, mc11s_reset_status_t *val);
+int32_t mc11s_reset(stmdev_ctx_t *ctx);
 
 typedef enum {
   MC11S_DRIVE_I_200uA  = 0x0,
-  MC11s_DRIVE_I_400uA  = 0x1,
-  MC11s_DRIVE_I_800uA  = 0x2,
-  MC11s_DRIVE_I_1mA6   = 0x3,
-  MC11s_DRIVE_I_2mA4   = 0x4,
-  MC11s_DRIVE_I_3mA2   = 0x5,
-  MC11s_DRIVE_I_3mA2   = 0x6,
-  MC11s_DRIVE_I_3mA2   = 0x7,
+  MC11S_DRIVE_I_400uA  = 0x1,
+  MC11S_DRIVE_I_800uA  = 0x2,
+  MC11S_DRIVE_I_1mA6   = 0x3,
+  MC11S_DRIVE_I_2mA4   = 0x4,
+  MC11S_DRIVE_I_3mA2_1 = 0x5,
+  MC11S_DRIVE_I_3mA2_2 = 0x6,
+  MC11S_DRIVE_I_3mA2_3 = 0x7,
 } mc11s_drive_i_status_t;
 int32_t mc11s_drive_i_status_set(stmdev_ctx_t *ctx, mc11s_drive_i_status_t val);
 int32_t mc11s_drive_i_status_get(stmdev_ctx_t *ctx, mc11s_drive_i_status_t *val);
 
 typedef enum {
   MC11S_VDD_SEL_2V5_5V5  = 0x0,
-  MC11s_VDD_SEL_2V_2V5   = 0x1,
+  MC11S_VDD_SEL_2V_2V5   = 0x1,
 } mc11s_vdd_sel_status_t;
 int32_t mc11s_vdd_sel_status_set(stmdev_ctx_t *ctx, mc11s_vdd_sel_status_t val);
 int32_t mc11s_vdd_sel_status_get(stmdev_ctx_t *ctx, mc11s_vdd_sel_status_t *val);
 
 typedef enum {
   MC11S_GLITCH_FILTER_DISABLE  = 0x0,
-  MC11s_GLITCH_FILTER_ENABLE   = 0x1,
+  MC11S_GLITCH_FILTER_ENABLE   = 0x1,
 } mc11s_glitch_filter_status_t;
 int32_t mc11s_glitch_filter_status_set(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t val);
 int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t *val);

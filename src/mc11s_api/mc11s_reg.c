@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
- * @file    sths34pf80_reg.c
- * @author  Sensors Software Solution Team
- * @brief   STHS34PF80 driver file
+ * @file    mc11s_reg.c
+ * @author  Lovelesh
+ * @brief   MC11S driver file
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+ * <h2><center>&copy; Copyright (c) 2024 MIS Electronics.
  * All rights reserved.</center></h2>
  *
  * This software component is licensed by ST under BSD 3-Clause license,
@@ -17,12 +17,12 @@
  ******************************************************************************
  */
 
-#include "sths34pf80_reg.h"
+#include "mc11s_reg.h"
 
 /**
- * @defgroup  STHS34PF80
+ * @defgroup  MC11S
  * @brief     This file provides a set of functions needed to drive the
- *            sths34pf80 enhanced inertial module.
+ *            mc11s module.
  * @{
  *
  */
@@ -50,11 +50,10 @@
  * @retval       interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t __weak sths34pf80_read_reg(stmdev_ctx_t *ctx, uint8_t reg,
-		uint8_t *data, uint16_t len) {
+int32_t __weak mc11s_read_reg(stmdev_ctx_t *ctx, uint8_t reg, uint8_t *data, uint16_t len) {
 	int32_t ret;
 
-	ret = ctx->read_reg(ctx->handle, STHS34PF80_I2C_ADD, reg, data, len);
+	ret = ctx->read_reg(ctx->handle, MC11S_I2C_ADD, reg, data, len);
 
 	return ret;
 }
@@ -69,11 +68,10 @@ int32_t __weak sths34pf80_read_reg(stmdev_ctx_t *ctx, uint8_t reg,
  * @retval       interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t __weak sths34pf80_write_reg(stmdev_ctx_t *ctx, uint8_t reg,
-		uint8_t *data, uint16_t len) {
+int32_t __weak mc11s_write_reg(stmdev_ctx_t *ctx, uint8_t reg, uint8_t *data, uint16_t len) {
 	int32_t ret;
 
-	ret = ctx->write_reg(ctx->handle, STHS34PF80_I2C_ADD, reg, data, len);
+	ret = ctx->write_reg(ctx->handle, MC11S_I2C_ADD, reg, data, len);
 
 	return ret;
 }
@@ -97,1985 +95,988 @@ int32_t __weak sths34pf80_write_reg(stmdev_ctx_t *ctx, uint8_t reg,
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_device_id_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_WHO_AM_I, val, 1);
-
-	return ret;
-}
-
-/**
- * @brief  Select number of averages for object temperature.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      AVG_TMOS_2, AVG_TMOS_8, AVG_TMOS_32, AVG_TMOS_128, AVG_TMOS_256, AVG_TMOS_512, AVG_TMOS_1024, AVG_TMOS_2048,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_avg_tobject_num_set(stmdev_ctx_t *ctx,
-		sths34pf80_avg_tobject_num_t val) {
-	sths34pf80_avg_trim_t avg_trim;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_AVG_TRIM, (uint8_t*) &avg_trim,
-			1);
-
-	if (ret == 0) {
-		avg_trim.avg_tmos = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_AVG_TRIM,
-				(uint8_t*) &avg_trim, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Select number of averages for object temperature.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      AVG_TMOS_2, AVG_TMOS_8, AVG_TMOS_32, AVG_TMOS_128, AVG_TMOS_256, AVG_TMOS_512, AVG_TMOS_1024, AVG_TMOS_2048,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_avg_tobject_num_get(stmdev_ctx_t *ctx,
-		sths34pf80_avg_tobject_num_t *val) {
-	sths34pf80_avg_trim_t avg_trim;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_AVG_TRIM, (uint8_t*) &avg_trim,
-			1);
-
-	switch (avg_trim.avg_tmos) {
-	case STHS34PF80_AVG_TMOS_2:
-		*val = STHS34PF80_AVG_TMOS_2;
-		break;
-
-	case STHS34PF80_AVG_TMOS_8:
-		*val = STHS34PF80_AVG_TMOS_8;
-		break;
-
-	case STHS34PF80_AVG_TMOS_32:
-		*val = STHS34PF80_AVG_TMOS_32;
-		break;
-
-	case STHS34PF80_AVG_TMOS_128:
-		*val = STHS34PF80_AVG_TMOS_128;
-		break;
-
-	case STHS34PF80_AVG_TMOS_256:
-		*val = STHS34PF80_AVG_TMOS_256;
-		break;
-
-	case STHS34PF80_AVG_TMOS_512:
-		*val = STHS34PF80_AVG_TMOS_512;
-		break;
-
-	case STHS34PF80_AVG_TMOS_1024:
-		*val = STHS34PF80_AVG_TMOS_1024;
-		break;
-
-	case STHS34PF80_AVG_TMOS_2048:
-		*val = STHS34PF80_AVG_TMOS_2048;
-		break;
-
-	default:
-		*val = STHS34PF80_AVG_TMOS_2;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Select number of averages for ambient temperature.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      AVG_T_8, AVG_T_4, AVG_T_2, AVG_T_1,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_avg_tambient_num_set(stmdev_ctx_t *ctx,
-		sths34pf80_avg_tambient_num_t val) {
-	sths34pf80_avg_trim_t avg_trim;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_AVG_TRIM, (uint8_t*) &avg_trim,
-			1);
-
-	if (ret == 0) {
-		avg_trim.avg_t = ((uint8_t) val & 0x3U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_AVG_TRIM,
-				(uint8_t*) &avg_trim, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Select number of averages for ambient temperature.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      AVG_T_8, AVG_T_4, AVG_T_2, AVG_T_1,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_avg_tambient_num_get(stmdev_ctx_t *ctx,
-		sths34pf80_avg_tambient_num_t *val) {
-	sths34pf80_avg_trim_t avg_trim;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_AVG_TRIM, (uint8_t*) &avg_trim,
-			1);
-
-	switch (avg_trim.avg_t) {
-	case STHS34PF80_AVG_T_8:
-		*val = STHS34PF80_AVG_T_8;
-		break;
-
-	case STHS34PF80_AVG_T_4:
-		*val = STHS34PF80_AVG_T_4;
-		break;
-
-	case STHS34PF80_AVG_T_2:
-		*val = STHS34PF80_AVG_T_2;
-		break;
-
-	case STHS34PF80_AVG_T_1:
-		*val = STHS34PF80_AVG_T_1;
-		break;
-
-	default:
-		*val = STHS34PF80_AVG_T_8;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  temperature range.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      range: GAIN_WIDE_MODE, GAIN_DEFAULT_MODE
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_gain_mode_set(stmdev_ctx_t *ctx, sths34pf80_gain_mode_t val) {
-	sths34pf80_ctrl0_t ctrl0;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL0, (uint8_t*) &ctrl0, 1);
-
-	if (ret == 0) {
-		ctrl0.gain = (uint8_t) val;
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL0, (uint8_t*) &ctrl0, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  temperature range.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      range: GAIN_WIDE_MODE, GAIN_DEFAULT_MODE
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_gain_mode_get(stmdev_ctx_t *ctx, sths34pf80_gain_mode_t *val) {
-	sths34pf80_ctrl0_t ctrl0;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL0, (uint8_t*) &ctrl0, 1);
-
-	switch (ctrl0.gain) {
-	case STHS34PF80_GAIN_WIDE_MODE:
-		*val = STHS34PF80_GAIN_WIDE_MODE;
-		break;
-
-	case STHS34PF80_GAIN_DEFAULT_MODE:
-		*val = STHS34PF80_GAIN_DEFAULT_MODE;
-		break;
-
-	default:
-		*val = STHS34PF80_GAIN_DEFAULT_MODE;
-		break;
-	}
-
-	return ret;
-}
-
-/**
- * @brief  sensitivity data.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      IN: desired sensitivity value
- *                  OUT: rounded sensitivity value
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_tobject_sensitivity_set(stmdev_ctx_t *ctx, uint16_t *val) {
-	sths34pf80_sens_data_t data;
-	int32_t ret;
-
-	data.sens =
-			(*val >= 2048U) ?
-					(*val - 2048U + 8U) / 16U : (*val - 2048U - 8U) / 16U;
-	ret = sths34pf80_write_reg(ctx, STHS34PF80_SENS_DATA, (uint8_t*) &data, 1);
-	*val = (int8_t) data.sens * 16U + 2048U;
-
-	return ret;
-}
-
-/**
- * @brief  sensitivity data.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      rounded sensitivity value
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_tobject_sensitivity_get(stmdev_ctx_t *ctx, uint16_t *val) {
-	sths34pf80_sens_data_t data;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_SENS_DATA, (uint8_t*) &data, 1);
-	*val = (int8_t) data.sens * 16 + 2048;
-
-	return ret;
-}
-
-/**
- * @brief  Enter to power-down in a safe way
- *
- * @param  ctx      read / write interface definitions
- * @param  ctrl1    Value of CTRL1 register
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-static int32_t sths34pf80_safe_power_down(stmdev_ctx_t *ctx,
-		sths34pf80_ctrl1_t ctrl1) {
-	sths34pf80_func_status_t func_status;
-	sths34pf80_drdy_status_t status;
-	int32_t ret;
-
-	/* if sensor is already in power-down then do nothing */
-	if ((uint8_t) ctrl1.odr == 0U) {
-		return 0;
-	}
-
-	/* reset the DRDY bit */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_FUNC_STATUS,
-			(uint8_t*) &func_status, 1);
-
-	/* wait DRDY bit go to '1' */
-	do {
-		ret += sths34pf80_drdy_status_get(ctx, &status);
-	} while (status.drdy == 0U);
-
-	/* perform power-down */
-	ctrl1.odr = 0U;
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-
-	/* reset the DRDY bit */
-	ret += sths34pf80_read_reg(ctx, STHS34PF80_FUNC_STATUS,
-			(uint8_t*) &func_status, 1);
-
-	return ret;
-}
-
-/**
- * @brief  Change odr in a safe way
- *
- * @param  ctx      read / write interface definitions
- * @param  ctrl1    Value of CTRL1 register
- * @param  odr_new  Value of new odr to be set
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-static int32_t sths34pf80_odr_safe_set(stmdev_ctx_t *ctx,
-		sths34pf80_ctrl1_t ctrl1, uint8_t odr_new) {
-	int32_t ret;
-
-	/* perform power-down transition in a safe way. */
-	ret = sths34pf80_safe_power_down(ctx, ctrl1);
-
-	if (odr_new > 0U) {
-		/*
-		 * Do a clean reset algo procedure everytime odr is changed to an
-		 * operative state.
-		 */
-		ret += sths34pf80_algo_reset(ctx);
-
-		/* set new odr */
-		ctrl1.odr = (odr_new & 0xfU);
-		ret += sths34pf80_write_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1,
-				1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Selects the tmos odr.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      ODR_OFF, ODR_AT_0Hz25, ODR_AT_0Hz50, ODR_1Hz, ODR_2Hz, ODR_4Hz, ODR_8Hz, ODR_15Hz, ODR_30Hz,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_odr_set(stmdev_ctx_t *ctx, sths34pf80_odr_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	sths34pf80_avg_trim_t avg_trim;
-	sths34pf80_odr_t max_odr = STHS34PF80_ODR_AT_30Hz;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-
-	if (ret == 0) {
-		ret = sths34pf80_read_reg(ctx, STHS34PF80_AVG_TRIM,
-				(uint8_t*) &avg_trim, 1);
-
-		switch (avg_trim.avg_tmos) {
-		default:
-		case STHS34PF80_AVG_TMOS_2:
-		case STHS34PF80_AVG_TMOS_8:
-		case STHS34PF80_AVG_TMOS_32:
-			max_odr = STHS34PF80_ODR_AT_30Hz;
-			break;
-		case STHS34PF80_AVG_TMOS_128:
-			max_odr = STHS34PF80_ODR_AT_8Hz;
-			break;
-		case STHS34PF80_AVG_TMOS_256:
-			max_odr = STHS34PF80_ODR_AT_4Hz;
-			break;
-		case STHS34PF80_AVG_TMOS_512:
-			max_odr = STHS34PF80_ODR_AT_2Hz;
-			break;
-		case STHS34PF80_AVG_TMOS_1024:
-			max_odr = STHS34PF80_ODR_AT_1Hz;
-			break;
-		case STHS34PF80_AVG_TMOS_2048:
-			max_odr = STHS34PF80_ODR_AT_0Hz50;
-			break;
-		}
-	}
-
-	if (ret == 0) {
-		if (val > max_odr) {
-			return -1;
-		}
-
-		ret = sths34pf80_odr_safe_set(ctx, ctrl1, (uint8_t) val);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Selects the tmos odr.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      ODR_OFF, ODR_AT_0Hz25, ODR_AT_0Hz50, ODR_1Hz, ODR_2Hz, ODR_4Hz, ODR_8Hz, ODR_15Hz, ODR_30Hz,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_odr_get(stmdev_ctx_t *ctx, sths34pf80_odr_t *val) {
-	sths34pf80_ctrl1_t ctrl1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-
-	switch (ctrl1.odr) {
-	case STHS34PF80_ODR_OFF:
-		*val = STHS34PF80_ODR_OFF;
-		break;
-
-	case STHS34PF80_ODR_AT_0Hz25:
-		*val = STHS34PF80_ODR_AT_0Hz25;
-		break;
-
-	case STHS34PF80_ODR_AT_0Hz50:
-		*val = STHS34PF80_ODR_AT_0Hz50;
-		break;
-
-	case STHS34PF80_ODR_AT_1Hz:
-		*val = STHS34PF80_ODR_AT_1Hz;
-		break;
-
-	case STHS34PF80_ODR_AT_2Hz:
-		*val = STHS34PF80_ODR_AT_2Hz;
-		break;
-
-	case STHS34PF80_ODR_AT_4Hz:
-		*val = STHS34PF80_ODR_AT_4Hz;
-		break;
-
-	case STHS34PF80_ODR_AT_8Hz:
-		*val = STHS34PF80_ODR_AT_8Hz;
-		break;
-
-	case STHS34PF80_ODR_AT_15Hz:
-		*val = STHS34PF80_ODR_AT_15Hz;
-		break;
-
-	case STHS34PF80_ODR_AT_30Hz:
-		*val = STHS34PF80_ODR_AT_30Hz;
-		break;
-
-	default:
-		*val = STHS34PF80_ODR_OFF;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Block Data Update (BDU): output registers are not updated until LSB and MSB have been read). [set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Block Data Update (BDU): output registers are not updated until LSB and MSB have been read).
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_block_data_update_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-
-	if (ret == 0) {
-		ctrl1.bdu = val;
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Block Data Update (BDU): output registers are not updated until LSB and MSB have been read). [get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Block Data Update (BDU): output registers are not updated until LSB and MSB have been read).
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_block_data_update_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	sths34pf80_ctrl1_t ctrl1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-
-	*val = ctrl1.bdu;
-
-	return ret;
-}
-
-/**
- * @brief  Selects data output mode.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      IDLE_MODE, ONE_SHOT
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_one_shot_set(stmdev_ctx_t *ctx, sths34pf80_one_shot_t val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-
-	if (ret == 0) {
-		ctrl2.one_shot = ((uint8_t) val & 0x1U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Selects data output mode.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      IDLE_MODE, ONE_SHOT
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_one_shot_get(stmdev_ctx_t *ctx, sths34pf80_one_shot_t *val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-
-	switch (ctrl2.one_shot) {
-	case STHS34PF80_IDLE_MODE:
-		*val = STHS34PF80_IDLE_MODE;
-		break;
-
-	case STHS34PF80_ONE_SHOT:
-		*val = STHS34PF80_ONE_SHOT;
-		break;
-
-	default:
-		*val = STHS34PF80_IDLE_MODE;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Change memory bank.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      MAIN_MEM_BANK, EMBED_FUNC_MEM_BANK, SENSOR_HUB_MEM_BANK, STRED_MEM_BANK,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_mem_bank_set(stmdev_ctx_t *ctx, sths34pf80_mem_bank_t val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-
-	if (ret == 0) {
-		ctrl2.func_cfg_access = ((uint8_t) val & 0x1U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Change memory bank.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      MAIN_MEM_BANK, EMBED_FUNC_MEM_BANK, SENSOR_HUB_MEM_BANK, STRED_MEM_BANK,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_mem_bank_get(stmdev_ctx_t *ctx, sths34pf80_mem_bank_t *val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-
-	switch (ctrl2.func_cfg_access) {
-	case STHS34PF80_MAIN_MEM_BANK:
-		*val = STHS34PF80_MAIN_MEM_BANK;
-		break;
-
-	case STHS34PF80_EMBED_FUNC_MEM_BANK:
-		*val = STHS34PF80_EMBED_FUNC_MEM_BANK;
-		break;
-
-	default:
-		*val = STHS34PF80_MAIN_MEM_BANK;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Global reset of the device.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      READY, RESTORE_CTRL_REGS,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_boot_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-
-	if (ret == 0) {
-		ctrl2.boot = val;
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Global reset of the device.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      READY, RESTORE_CTRL_REGS,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_boot_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	sths34pf80_ctrl2_t ctrl2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL2, (uint8_t*) &ctrl2, 1);
-	*val = ctrl2.boot;
-
-	return ret;
-}
-
-/**
- * @brief  status of drdy.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      status of drdy bit (TAMB, TOBJ, TAMB_SHOCK, TPRESENCE, TMOTION).
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_drdy_status_get(stmdev_ctx_t *ctx,
-		sths34pf80_drdy_status_t *val) {
-	sths34pf80_status_t status;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_STATUS, (uint8_t*) &status, 1);
-
-	val->drdy = status.drdy;
-
-	return ret;
-}
-
-/**
- * @brief  status of internal functions.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      status of internal functions.
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_func_status_get(stmdev_ctx_t *ctx,
-		sths34pf80_func_status_t *val) {
-	sths34pf80_func_status_t func_status;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_FUNC_STATUS,
-			(uint8_t*) &func_status, 1);
-
-	val->tamb_shock_flag = func_status.tamb_shock_flag;
-	val->mot_flag = func_status.mot_flag;
-	val->pres_flag = func_status.pres_flag;
-
-	return ret;
-}
-
-/**
- * @brief  Object temperature output register.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Object temperature output register.
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_tobject_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
+int32_t mc11s_device_id_get(stmdev_ctx_t *ctx, uint16_t *val) {
 	uint8_t buff[2];
 	int32_t ret;
 
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TOBJECT_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_DEVICE_ID_MSB, &buff[0], 2);
+    // MSB is read first and then LSB is read; so swap the buff locations
+	*val = (int16_t) buff[0];
+	*val = (*val * 256) + (int16_t) buff[1];
 
 	return ret;
 }
 
+
 /**
- * @brief  Ambient temperature output register.[get]
+ * @brief  CH0 sensor data register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Ambient temperature output register.
+ * @param  val      CH0 data register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tambient_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
-	uint8_t buff[2];
+int32_t mc11s_data_ch0_get(stmdev_ctx_t *ctx, uint16_t *val) {
+    uint8_t buff[2];
 	int32_t ret;
 
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TAMBIENT_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_DATA_CH0_MSB, &buff[0], 2);
+    // MSB is read first and then LSB is read; so swap the buff locations
+	*val = (int16_t) buff[0];
+	*val = (*val * 256) + (int16_t) buff[1];
 
 	return ret;
 }
 
 /**
- * @brief  Object compensation output register.[get]
+ * @brief  CH1 sensor data register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Object compensation output register.
+ * @param  val      CH1 data register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tobj_comp_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
-	uint8_t buff[2];
+int32_t mc11s_data_ch1_get(stmdev_ctx_t *ctx, uint16_t *val) {
+    uint8_t buff[2];
 	int32_t ret;
 
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TOBJ_COMP_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
-
-	return ret;
-}
-
-/**
- * @brief  Presence algo data output register.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Presence algo data output register.
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_tpresence_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
-	uint8_t buff[2];
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TPRESENCE_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_DATA_CH1_MSB, &buff[0], 2);
+    // MSB is read first and then LSB is read; so swap the buff locations
+	*val = (int16_t) buff[0];
+	*val = (*val * 256) + (int16_t) buff[1];
 
 	return ret;
 }
 
 /**
- * @brief  Motion algo data output register.[get]
+ * @brief  Counting time configuration register.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Motion algo data output register.
+ * @param  val      Counting time configuration register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tmotion_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
-	uint8_t buff[2];
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TMOTION_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
-
-	return ret;
-}
-
-/**
- * @brief  Temperature ambient shock algo data output register.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Temperature ambient shock algo data output register.
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_tamb_shock_raw_get(stmdev_ctx_t *ctx, int16_t *val) {
-	uint8_t buff[2];
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_TAMB_SHOCK_L, &buff[0], 2);
-
-	*val = (int16_t) buff[1];
-	*val = (*val * 256) + (int16_t) buff[0];
-
-	return ret;
-}
-
-/**
- * @}
- *
- */
-
-/**
- * @defgroup Filters
- * @brief    Filters
- * @{/
- *
- */
-/**
- * @brief  low-pass filter configuration.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_m_bandwidth_set(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t val) {
-	sths34pf80_lpf1_t lpf1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-
-	if (ret == 0) {
-		lpf1.lpf_m = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_m_bandwidth_get(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t *val) {
-	sths34pf80_lpf1_t lpf1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-
-	switch ((lpf1.lpf_m)) {
-	case STHS34PF80_LPF_ODR_DIV_9:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_20:
-		*val = STHS34PF80_LPF_ODR_DIV_20;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_50:
-		*val = STHS34PF80_LPF_ODR_DIV_50;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_100:
-		*val = STHS34PF80_LPF_ODR_DIV_100;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_200:
-		*val = STHS34PF80_LPF_ODR_DIV_200;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_400:
-		*val = STHS34PF80_LPF_ODR_DIV_400;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_800:
-		*val = STHS34PF80_LPF_ODR_DIV_800;
-		break;
-
-	default:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_p_m_bandwidth_set(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t val) {
-	sths34pf80_lpf1_t lpf1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-
-	if (ret == 0) {
-		lpf1.lpf_p_m = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_p_m_bandwidth_get(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t *val) {
-	sths34pf80_lpf1_t lpf1;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF1, (uint8_t*) &lpf1, 1);
-
-	switch ((lpf1.lpf_p_m)) {
-	case STHS34PF80_LPF_ODR_DIV_9:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_20:
-		*val = STHS34PF80_LPF_ODR_DIV_20;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_50:
-		*val = STHS34PF80_LPF_ODR_DIV_50;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_100:
-		*val = STHS34PF80_LPF_ODR_DIV_100;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_200:
-		*val = STHS34PF80_LPF_ODR_DIV_200;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_400:
-		*val = STHS34PF80_LPF_ODR_DIV_400;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_800:
-		*val = STHS34PF80_LPF_ODR_DIV_800;
-		break;
-
-	default:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_a_t_bandwidth_set(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t val) {
-	sths34pf80_lpf2_t lpf2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-
-	if (ret == 0) {
-		lpf2.lpf_a_t = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_a_t_bandwidth_get(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t *val) {
-	sths34pf80_lpf2_t lpf2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-
-	switch ((lpf2.lpf_a_t)) {
-	case STHS34PF80_LPF_ODR_DIV_9:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_20:
-		*val = STHS34PF80_LPF_ODR_DIV_20;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_50:
-		*val = STHS34PF80_LPF_ODR_DIV_50;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_100:
-		*val = STHS34PF80_LPF_ODR_DIV_100;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_200:
-		*val = STHS34PF80_LPF_ODR_DIV_200;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_400:
-		*val = STHS34PF80_LPF_ODR_DIV_400;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_800:
-		*val = STHS34PF80_LPF_ODR_DIV_800;
-		break;
-
-	default:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_p_bandwidth_set(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t val) {
-	sths34pf80_lpf2_t lpf2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-
-	if (ret == 0) {
-		lpf2.lpf_p = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  low-pass filter configuration.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      LPF_ODR_DIV_9, LPF_ODR_DIV_20, LPF_ODR_DIV_50, LPF_ODR_DIV_100, LPF_ODR_DIV_200, LPF_ODR_DIV_400, LPF_ODR_DIV_800,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_lpf_p_bandwidth_get(stmdev_ctx_t *ctx,
-		sths34pf80_lpf_bandwidth_t *val) {
-	sths34pf80_lpf2_t lpf2;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_LPF2, (uint8_t*) &lpf2, 1);
-
-	switch ((lpf2.lpf_p)) {
-	case STHS34PF80_LPF_ODR_DIV_9:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_20:
-		*val = STHS34PF80_LPF_ODR_DIV_20;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_50:
-		*val = STHS34PF80_LPF_ODR_DIV_50;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_100:
-		*val = STHS34PF80_LPF_ODR_DIV_100;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_200:
-		*val = STHS34PF80_LPF_ODR_DIV_200;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_400:
-		*val = STHS34PF80_LPF_ODR_DIV_400;
-		break;
-
-	case STHS34PF80_LPF_ODR_DIV_800:
-		*val = STHS34PF80_LPF_ODR_DIV_800;
-		break;
-
-	default:
-		*val = STHS34PF80_LPF_ODR_DIV_9;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @}
- *
- */
-
-/**
- * @defgroup Interrupt PINs
- * @brief    Interrupt PINs
- * @{/
- *
- */
-/**
- * @brief  Selects interrupts to be routed.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      INT_HIZ, INT_DRDY, INT_OR,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_route_int_set(stmdev_ctx_t *ctx, sths34pf80_route_int_t val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	if (ret == 0) {
-		ctrl3.ien = ((uint8_t) val & 0x3U);
-		if (val == STHS34PF80_INT_OR) {
-			ctrl3.int_latched = 0; /* guarantee that latched is zero in INT_OR case */
-		}
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Selects interrupts to be routed.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      INT_HIZ, INT_DRDY, INT_OR,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_route_int_get(stmdev_ctx_t *ctx, sths34pf80_route_int_t *val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	switch ((ctrl3.ien)) {
-	case STHS34PF80_INT_HIZ:
-		*val = STHS34PF80_INT_HIZ;
-		break;
-
-	case STHS34PF80_INT_DRDY:
-		*val = STHS34PF80_INT_DRDY;
-		break;
-
-	case STHS34PF80_INT_OR:
-		*val = STHS34PF80_INT_OR;
-		break;
-
-	default:
-		*val = STHS34PF80_INT_HIZ;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Selects interrupts output.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      INT_NONE, INT_TSHOCK, INT_MOTION, INT_TSHOCK_MOTION, INT_PRESENCE, INT_TSHOCK_PRESENCE, INT_MOTION_PRESENCE, INT_ALL,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_or_set(stmdev_ctx_t *ctx, sths34pf80_int_or_t val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	if (ret == 0) {
-		ctrl3.int_msk = ((uint8_t) val & 0x7U);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Selects interrupts output.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      INT_NONE, INT_TSHOCK, INT_MOTION, INT_TSHOCK_MOTION, INT_PRESENCE, INT_TSHOCK_PRESENCE, INT_MOTION_PRESENCE, INT_ALL,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_or_get(stmdev_ctx_t *ctx, sths34pf80_int_or_t *val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	switch ((ctrl3.int_msk)) {
-	case STHS34PF80_INT_NONE:
-		*val = STHS34PF80_INT_NONE;
-		break;
-
-	case STHS34PF80_INT_TSHOCK:
-		*val = STHS34PF80_INT_TSHOCK;
-		break;
-
-	case STHS34PF80_INT_MOTION:
-		*val = STHS34PF80_INT_MOTION;
-		break;
-
-	case STHS34PF80_INT_TSHOCK_MOTION:
-		*val = STHS34PF80_INT_TSHOCK_MOTION;
-		break;
-
-	case STHS34PF80_INT_PRESENCE:
-		*val = STHS34PF80_INT_PRESENCE;
-		break;
-
-	case STHS34PF80_INT_TSHOCK_PRESENCE:
-		*val = STHS34PF80_INT_TSHOCK_PRESENCE;
-		break;
-
-	case STHS34PF80_INT_MOTION_PRESENCE:
-		*val = STHS34PF80_INT_MOTION_PRESENCE;
-		break;
-
-	case STHS34PF80_INT_ALL:
-		*val = STHS34PF80_INT_ALL;
-		break;
-
-	default:
-		*val = STHS34PF80_INT_NONE;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @brief  Push-pull/open-drain selection on INT1 and INT2 pins.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      PUSH_PULL, OPEN_DRAIN,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_mode_set(stmdev_ctx_t *ctx, sths34pf80_int_mode_t val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	if (ret == 0) {
-		ctrl3.pp_od = ((uint8_t) val.pin);
-		ctrl3.int_h_l = ((uint8_t) val.polarity);
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  Push-pull/open-drain selection on INT1 and INT2 pins.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      PUSH_PULL, OPEN_DRAIN,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_mode_get(stmdev_ctx_t *ctx, sths34pf80_int_mode_t *val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	switch (ctrl3.pp_od) {
-	case STHS34PF80_PUSH_PULL:
-		val->pin = STHS34PF80_PUSH_PULL;
-		break;
-
-	case STHS34PF80_OPEN_DRAIN:
-		val->pin = STHS34PF80_OPEN_DRAIN;
-		break;
-
-	default:
-		val->pin = STHS34PF80_PUSH_PULL;
-		break;
-	}
-
-	switch (ctrl3.int_h_l) {
-	case STHS34PF80_ACTIVE_HIGH:
-		val->polarity = STHS34PF80_ACTIVE_HIGH;
-		break;
-
-	case STHS34PF80_ACTIVE_LOW:
-		val->polarity = STHS34PF80_ACTIVE_LOW;
-		break;
-
-	default:
-		val->polarity = STHS34PF80_ACTIVE_HIGH;
-		break;
-	}
-
-	return ret;
-}
-
-/**
- * @brief  DRDY mode.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      DRDY_PULSED, DRDY_LATCHED,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_drdy_mode_set(stmdev_ctx_t *ctx, sths34pf80_drdy_mode_t val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	if (ret == 0) {
-		ctrl3.int_latched = (uint8_t) val;
-		ret = sths34pf80_write_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-	}
-
-	return ret;
-}
-
-/**
- * @brief  DRDY mode.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      DRDY_PULSED, DRDY_LATCHED,
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_drdy_mode_get(stmdev_ctx_t *ctx, sths34pf80_drdy_mode_t *val) {
-	sths34pf80_ctrl3_t ctrl3;
-	int32_t ret;
-
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL3, (uint8_t*) &ctrl3, 1);
-
-	switch (ctrl3.int_latched) {
-	case STHS34PF80_DRDY_PULSED:
-		*val = STHS34PF80_DRDY_PULSED;
-		break;
-
-	case STHS34PF80_DRDY_LATCHED:
-		*val = STHS34PF80_DRDY_LATCHED;
-		break;
-
-	default:
-		*val = STHS34PF80_DRDY_PULSED;
-		break;
-	}
-	return ret;
-}
-
-/**
- * @}
- *
- */
-
-/**
- * @defgroup Embedded
- * @brief    Embedded
- * @{/
- *
- */
-/**
- * @brief  Function Configuration write
- *
- * @param  ctx      read / write interface definitions
- * @param  addr     embedded register address
- * @param  data     embedded register data
- * @param  len      embedded register data len
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_func_cfg_write(stmdev_ctx_t *ctx, uint8_t addr,
-		uint8_t *data, uint8_t len) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	sths34pf80_page_rw_t page_rw = { 0 };
-	int32_t ret;
-	uint8_t i;
-
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	/* Enable access to embedded functions register */
-	ret += sths34pf80_mem_bank_set(ctx, STHS34PF80_EMBED_FUNC_MEM_BANK);
-
-	/* Enable write mode */
-	page_rw.func_cfg_write = 1;
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_PAGE_RW, (uint8_t*) &page_rw,
-			1);
-
-	/* Select register address (it will autoincrement when writing) */
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_FUNC_CFG_ADDR, &addr, 1);
-
-	for (i = 0; i < len; i++) {
-		/* Write data */
-		ret += sths34pf80_write_reg(ctx, STHS34PF80_FUNC_CFG_DATA, &data[i], 1);
-	}
-
-	/* Disable write mode */
-	page_rw.func_cfg_write = 0;
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_PAGE_RW, (uint8_t*) &page_rw,
-			1);
-
-	/* Disable access to embedded functions register */
-	ret += sths34pf80_mem_bank_set(ctx, STHS34PF80_MAIN_MEM_BANK);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
-
-	return ret;
-}
-
-/**
- * @brief  Function Configuration read
- *
- * @param  ctx      read / write interface definitions
- * @param  addr     embedded register address
- * @param  data     embedded register data
- * @param  len      embedded register data len
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_func_cfg_read(stmdev_ctx_t *ctx, uint8_t addr, uint8_t *data,
-		uint8_t len) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	uint8_t reg_addr;
-	sths34pf80_page_rw_t page_rw = { 0 };
-	int32_t ret;
-	uint8_t i;
-
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	/* Enable access to embedded functions register */
-	ret += sths34pf80_mem_bank_set(ctx, STHS34PF80_EMBED_FUNC_MEM_BANK);
-
-	/* Enable read mode */
-	page_rw.func_cfg_read = 1;
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_PAGE_RW, (uint8_t*) &page_rw,
-			1);
-
-	for (i = 0; i < len; i++) {
-		/* Select register address */
-		reg_addr = addr + i;
-		ret += sths34pf80_write_reg(ctx, STHS34PF80_FUNC_CFG_ADDR, &reg_addr,
-				1);
-
-		/* Read data */
-		ret += sths34pf80_read_reg(ctx, STHS34PF80_FUNC_CFG_DATA, &data[i], 1);
-	}
-
-	/* Disable read mode */
-	page_rw.func_cfg_read = 0;
-	ret += sths34pf80_write_reg(ctx, STHS34PF80_PAGE_RW, (uint8_t*) &page_rw,
-			1);
-
-	/* Disable access to embedded functions register */
-	ret += sths34pf80_mem_bank_set(ctx, STHS34PF80_MAIN_MEM_BANK);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
-
-	return ret;
-}
-
-/**
- * @brief  Presence threshold.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      presence threshold level
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_presence_threshold_set(stmdev_ctx_t *ctx, uint16_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	uint8_t buff[2];
+int32_t mc11s_rcnt_set(stmdev_ctx_t *ctx, uint16_t val) {
+    uint8_t buff[2];
 	int32_t ret;
 
 	if ((val & 0x8000U) != 0x0U) {
-		/* threshold values are on 15 bits */
-		return -1;
+	    /* threshold values are on 15 bits */
+	    return -1;
 	}
-
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	buff[1] = (uint8_t) (val / 256U);
-	buff[0] = (uint8_t) (val - (buff[1] * 256U));
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_PRESENCE_THS, &buff[0], 2);
-
-	ret += sths34pf80_algo_reset(ctx);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+    // MSB is to be written first and then LSB; so swap the buff locations
+	buff[0] = (uint8_t)(val / 256U);
+	buff[1] = (uint8_t)(val - (buff[0] * 256U));
+	ret += mc11s_write_reg(ctx, MC11S_RCNT_MSB, &buff[0], 2);
 
 	return ret;
 }
 
 /**
- * @brief  Presence threshold.[get]
+ * @brief  Counting time configuration register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      presence threshold level
+ * @param  val      Counting time configuration register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_presence_threshold_get(stmdev_ctx_t *ctx, uint16_t *val) {
-	uint8_t buff[2];
+int32_t mc11s_rcnt_get(stmdev_ctx_t *ctx, uint16_t *val) {
+    uint8_t buff[2];
 	int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_PRESENCE_THS, &buff[0], 2);
-
-	*val = buff[1];
-	*val = (*val * 256U) + buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_RCNT_MSB, &buff[0], 2);
+    // MSB is read first and then LSB is read; so swap the buff locations
+	*val = (int16_t) buff[0];
+	*val = (*val * 256) + (int16_t) buff[1];
 
 	return ret;
 }
 
 /**
- * @brief  Motion threshold.[set]
+ * @brief  Setup time configuration register.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      motion threshold level
+ * @param  val      Setup time configuration register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_motion_threshold_set(stmdev_ctx_t *ctx, uint16_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	uint8_t buff[2];
+int32_t mc11s_scnt_set(stmdev_ctx_t *ctx, uint8_t val) {
 	int32_t ret;
 
-	if ((val & 0x8000U) != 0x0U) {
-		/* threshold values are on 15 bits */
-		return -1;
-	}
-
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	buff[1] = (uint8_t) (val / 256U);
-	buff[0] = (uint8_t) (val - (buff[1] * 256U));
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_MOTION_THS, &buff[0], 2);
-
-	ret += sths34pf80_algo_reset(ctx);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+	ret = mc11s_write_reg(ctx, MC11S_SCNT, &val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Motion threshold.[get]
+ * @brief  Setup time configuration register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      motion threshold level
+ * @param  val      Setup time configuration register
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_motion_threshold_get(stmdev_ctx_t *ctx, uint16_t *val) {
-	uint8_t buff[2];
+int32_t mc11s_scnt_get(stmdev_ctx_t *ctx, uint8_t *val) {
 	int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_MOTION_THS, &buff[0], 2);
-
-	*val = buff[1];
-	*val = (*val * 256U) + buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_SCNT, val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Tambient shock threshold.[set]
+ * @brief  Select Input Frequency Divider.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Tambient shock threshold level
+ * @param  val      DIV_2, DIV_4, DIV_8, DIV_16, DIV_32, DIV_64, DIV_128, DIV_256
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tambient_shock_threshold_set(stmdev_ctx_t *ctx, uint16_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	uint8_t buff[2];
+int32_t mc11s_fin_div_set(stmdev_ctx_t *ctx, mc11s_fin_div_val_t val) {
+    mc11s_fin_div_t fin_div_val;
+    int32_t ret;
+
+    ret = mc11s_read_reg(ctx, MC11S_FIN_DIV, (uint8_t*) &fin_div_val, 1);
+
+    if (ret == 0) {
+        fin_div_val.fin_div = ((uint8_t) val & 0xFU);
+        ret = mc11s_write_reg(ctx, MC11S_FIN_DIV, (uint8_t*) &fin_div_val, 1); 
+    }
+
+    return ret;
+}
+
+/**
+ * @brief  Select Input Frequency Divider.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      DIV_2, DIV_4, DIV_8, DIV_16, DIV_32, DIV_64, DIV_128, DIV_256
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_fin_div_get(stmdev_ctx_t *ctx, mc11s_fin_div_val_t *val) {
+    mc11s_fin_div_t fin_div_val;
+    int32_t ret;
+
+    ret = mc11s_read_reg(ctx, MC11S_FIN_DIV, (uint8_t*) &fin_div_val, 1);
+
+    switch(fin_div_val.fin_div) {
+        case MC11S_FIN_DIV_2:
+            *val = MC11S_FIN_DIV_2;
+            break;
+        
+        case MC11S_FIN_DIV_4:
+            *val = MC11S_FIN_DIV_4;
+            break;
+
+        case MC11S_FIN_DIV_8:
+            *val = MC11S_FIN_DIV_8;
+            break;
+
+        case MC11S_FIN_DIV_16:
+            *val = MC11S_FIN_DIV_16;
+            break;
+
+        case MC11S_FIN_DIV_32:
+            *val = MC11S_FIN_DIV_32;
+            break;    
+
+        case MC11S_FIN_DIV_64:
+            *val = MC11S_FIN_DIV_64;
+            break;
+
+        case MC11S_FIN_DIV_128:
+            *val = MC11S_FIN_DIV_128;
+            break;
+
+        case MC11S_FIN_DIV_256:
+            *val = MC11S_FIN_DIV_256;
+            break;
+        
+        default:
+            *val = MC11S_FIN_DIV_8;
+            break;
+    }
+
+    return ret;
+}
+
+/**
+ * @brief  Select Reference Frequency Divider.[set]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      0 to 255 (FREF_DIV + 1)
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_fref_div_set(stmdev_ctx_t *ctx, uint8_t val) {
+    int32_t ret;
+
+	ret = mc11s_write_reg(ctx, MC11S_FREF_DIV, &val, 1);
+
+	return ret;
+}
+
+/**
+ * @brief  Select Reference Frequency Divider.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      0 to 255 (FREF_DIV + 1)
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_fref_div_get(stmdev_ctx_t *ctx, uint8_t *val) {
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_FREF_DIV, val, 1);
+
+	return ret;
+}
+
+/**
+ * @brief  Status of Channel0 drdy.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if channel0 conversion completed else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_drdy_ch0_status_get(stmdev_ctx_t *ctx, mc11s_drdy_ch0_status_t *val) {
+     mc11s_status_t status;
+     int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_STATUS, (uint8_t*) &status, 1);
+
+    val->drdy_ch0 = status.drdy_ch0;
+
+	return ret;
+}
+
+/**
+ * @brief  Status of Channel1 drdy.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if channel1 conversion completed else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_drdy_ch1_status_get(stmdev_ctx_t *ctx, mc11s_drdy_ch1_status_t *val) {
+     mc11s_status_t status;
+     int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_STATUS, (uint8_t*) &status, 1);
+
+    val->drdy_ch1 = status.drdy_ch1;
+
+	return ret;
+}
+
+/**
+ * @brief  Status of Alert bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if alarm triggered else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_alert_status_get(stmdev_ctx_t *ctx, mc11s_alert_status_t *val) {
+     mc11s_status_t status;
+     int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_STATUS, (uint8_t*) &status, 1);
+
+    val->alert = status.alert;
+
+	return ret;
+}
+
+/**
+ * @brief  Status of Data1 Threshold overflow bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if overflow bit is set else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_trh_of_d_status_get(stmdev_ctx_t *ctx, mc11s_trh_of_d_status_t *val) {
+     mc11s_status_t status;
+     int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_STATUS, (uint8_t*) &status, 1);
+
+    val->trh_of_d = status.trh_of_d;
+
+	return ret;
+}
+
+/**
+ * @brief  Alarm Trigger Threshold register.[set]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      Alarm trigger threshold register (0x40 * DATA_D0 / DATA_D1 > TRH)
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_trh_set(stmdev_ctx_t *ctx, uint8_t val) {
 	int32_t ret;
 
-	if ((val & 0x8000U) != 0x0U) {
-		/* threshold values are on 15 bits */
-		return -1;
-	}
-
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	buff[1] = (uint8_t) (val / 256U);
-	buff[0] = (uint8_t) (val - (buff[1] * 256U));
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_TAMB_SHOCK_THS, &buff[0],
-			2);
-
-	ret += sths34pf80_algo_reset(ctx);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+	ret = mc11s_write_reg(ctx, MC11S_TRH, &val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Tambient shock threshold.[get]
+ * @brief  Alarm Trigger Threshold register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Tambient shock threshold level
+ * @param  val      Alarm trigger threshold register (0x40 * DATA_D0 / DATA_D1 > TRH)
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tambient_shock_threshold_get(stmdev_ctx_t *ctx,
-		uint16_t *val) {
-	uint8_t buff[2];
+int32_t mc11s_trh_get(stmdev_ctx_t *ctx, uint8_t *val) {
 	int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_TAMB_SHOCK_THS, &buff[0], 2);
-
-	*val = buff[1];
-	*val = (*val * 256U) + buff[0];
+	ret = mc11s_read_reg(ctx, MC11S_TRH, val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Motion hysteresis threshold.[set]
+ * @brief  Alarm Release Threshold register.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Motion hysteresis value
+ * @param  val      Alarm release threshold register (0x40 * DATA_D0 / DATA_D1 < TRL)
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_motion_hysteresis_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
+int32_t mc11s_trl_set(stmdev_ctx_t *ctx, uint8_t val) {
 	int32_t ret;
 
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_HYST_MOTION, &val, 1);
-
-	ret += sths34pf80_algo_reset(ctx);
-
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+	ret = mc11s_write_reg(ctx, MC11S_TRL, &val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Motion hysteresis threshold.[get]
+ * @brief  Alarm Release Threshold register.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Motion hysteresis value
+ * @param  val      Alarm release threshold register (0x40 * DATA_D0 / DATA_D1 < TRL)
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_motion_hysteresis_get(stmdev_ctx_t *ctx, uint8_t *val) {
+int32_t mc11s_trl_get(stmdev_ctx_t *ctx, uint8_t *val) {
 	int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_HYST_MOTION, val, 1);
+	ret = mc11s_read_reg(ctx, MC11S_TRL, val, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Presence hysteresis.[set]
+ * @brief  Status of Reference Clock Selector bit.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Presence hysteresis value
+ * @param  val      1 if external clock is selected, 0 if internal clock is selected
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_presence_hysteresis_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	int32_t ret;
+int32_t mc11s_ref_clk_sel_status_set(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t val) {
+    mc11s_cfg_t status;
+    int32_t ret;
 
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
+    ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
 
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_HYST_PRESENCE, &val, 1);
+    if (ret == 0) {
+        status.ref_clk_sel = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1); 
+    }
 
-	ret += sths34pf80_algo_reset(ctx);
+    return ret;
+    
+}
 
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+/**
+ * @brief  Status of Reference Clock Selector bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if external clock is selected, 0 if internal clock is selected
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_ref_clk_sel_status_get(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t *val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    switch (status.ref_clk_sel) {
+        case MC11S_SEL_INT_CLK:
+            *val = MC11S_SEL_INT_CLK;
+            break;
+
+        case MC11s_SEL_EXT_CLK:
+            *val = MC11S_SEL_EXT_CLK;
+            break;
+    
+        default:
+            *val = MC11S_SEL_INT_CLK;
+            break;
+    }
+
+	return ret;
+}
+
+
+/**
+ * @brief  Status of Interrupt Output Enable bit.[set]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if interrupt is mapped to alarm flag or conversion completion flag, 0 if it doesnot output flag bit
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_intb_en_status_set(stmdev_ctx_t *ctx, mc11s_intb_en_status_t val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+    ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.intb_en = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Interrupt Output Enable bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if interrupt is mapped to alarm flag or conversion completion flag, 0 if it doesnot output flag bit
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_intb_en_status_get(stmdev_ctx_t *ctx, mc11s_intb_en_status_t *val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    switch (status.intb_en) {
+        case MC11S_INTB_DISABLE:
+            *val = MC11S_INTB_DISABLE;
+            break;
+
+        case MC11S_INTB_ENABLE:
+            *val = MC11S_INTB_ENABLE;
+            break;
+    
+        default:
+            *val = MC11S_INTB_ENABLE;
+            break;
+    }
 
 	return ret;
 }
 
 /**
- * @brief  Presence hysteresis.[get]
+ * @brief  Status of Interrupt Mode bit.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Presence hysteresis value
+ * @param  val      1 if interrupt is mapped to alarm flag, 0 if interrupt mapped to conversion completion flag
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_presence_hysteresis_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	int32_t ret;
+int32_t mc11s_intb_mode_status_set(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t val) {
+    mc11s_cfg_t status;
+    int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_HYST_PRESENCE, val, 1);
+    ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.intb_mode = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Interrupt Mode bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if interrupt is mapped to alarm flag, 0 if interrupt mapped to conversion completion flag
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_intb_mode_status_get(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t *val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    switch (status.intb_mode) {
+        case MC11S_INTB_ALARM:
+            *val = MC11S_INTB_ALARM;
+            break;
+
+        case MC11S_INTB_CONV:
+            *val = MC11S_INTB_CONV;
+            break;
+    
+        default:
+            *val = MC11S_INTB_ALARM;
+            break;
+    }
 
 	return ret;
 }
 
 /**
- * @brief  Tambient shock hysteresis.[set]
+ * @brief  Status of Conversion time bits.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Tambient shock hysteresis value
+ * @param  val      CONV_60S, CONV_30S, CONV_10S, CONV_5S, CONV_2S, CONV_1S, CONV_0S5, CONV_0S25
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tambient_shock_hysteresis_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	int32_t ret;
+int32_t mc11s_conv_time_status_set(stmdev_ctx_t *ctx, mc11s_conv_time_status_t val) {
+    mc11s_cfg_t status;
+    int32_t ret;
 
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
+    ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
 
-	ret += sths34pf80_func_cfg_write(ctx, STHS34PF80_HYST_TAMB_SHOCK, &val, 1);
+    if (ret == 0) {
+        status.cr = ((uint8_t) val & 0x7U);
+        ret = mc11s_write_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1); 
+    }
 
-	ret += sths34pf80_algo_reset(ctx);
+    return ret;
+    
+}
 
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+/**
+ * @brief  Status of Interrupt Mode bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      CONV_60S, CONV_30S, CONV_10S, CONV_5S, CONV_2S, CONV_1S, CONV_0S5, CONV_0S25
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_conv_time_status_get(stmdev_ctx_t *ctx, mc11s_conv_time_status_t *val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    switch (status.cr) {
+        case MC11S_CONV_60S:
+            *val = MC11S_CONV_60S;
+            break;
+
+        case MC11S_CONV_30S:
+            *val = MC11S_CONV_30S;
+            break;
+    
+        case MC11S_CONV_10S:
+            *val = MC11S_CONV_10S;
+            break;
+
+        case MC11S_CONV_5S:
+            *val = MC11S_CONV_5S;
+            break;
+
+        case MC11S_CONV_2S:
+            *val = MC11S_CONV_2S;
+            break;
+
+        case MC11S_CONV_1S:
+            *val = MC11S_CONV_1S;
+            break;
+
+        case MC11S_CONV_0S5:
+            *val = MC11S_CONV_0S5;
+            break;
+
+        case MC11S_CONV_0S25:
+            *val = MC11S_CONV_0S25;
+            break;
+
+        default:
+            *val = MC11S_CONV_1S;
+            break;
+    }
 
 	return ret;
 }
 
 /**
- * @brief  Tambient shock hysteresis.[get]
+ * @brief  Status of Channel Conversion Mode bits.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Tambient shock hysteresis value
+ * @param  val      CONT_CONV, STOP_CONV, CONT_CONV_RB, SINGLE_CONV
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tambient_shock_hysteresis_get(stmdev_ctx_t *ctx,
-		uint8_t *val) {
-	int32_t ret;
+int32_t mc11s_conv_mode_status_set(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t val) {
+    mc11s_cfg_t status;
+    int32_t ret;
 
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_HYST_TAMB_SHOCK, val, 1);
+    ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.os_sd = ((uint8_t) val & 0x3U);
+        ret = mc11s_write_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Channel Conversion Mode bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      CONT_CONV, STOP_CONV, CONT_CONV_RB, SINGLE_CONV
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_conv_mode_status_get(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t *val) {
+    mc11s_cfg_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CFG, (uint8_t*) &status, 1);
+
+    switch (status.os_sd) {
+        case MC11S_CONT_CONV:
+            *val = MC11S_CONT_CONV;
+            break;
+
+        case MC11S_STOP_CONV:
+            *val = MC11S_STOP_CONV;
+            break;
+    
+        case MC11S_CONT_CONV_RB:
+            *val = MC11S_CONT_CONV_RB;
+            break;
+
+        case MC11S_SINGLE_CONV:
+            *val = MC11S_SINGLE_CONV;
+            break;
+
+        default:
+            *val = MC11S_CONT_CONV;
+            break;
+    }
 
 	return ret;
 }
 
-typedef struct {
-	uint8_t int_pulsed :1;
-	uint8_t comp_type :1;
-	uint8_t sel_abs :1;
-} sths34pf80_algo_config_t;
-
 /**
- * @brief  Algo configuration.[set]
+ * @brief  Status of Channel0 enable bit.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Algo configuration structure
+ * @param  val      1 if channel0 is enabled else 0
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-static int32_t sths34pf80_algo_config_set(stmdev_ctx_t *ctx,
-		sths34pf80_algo_config_t val) {
+int32_t mc11s_ch0_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val) {
+    mc11s_ch_en_t status;
+    int32_t ret;
+
+    ret = mc11s_read_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.ch0_en = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Channel0 enable bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if channel0 is enabled else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_ch0_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val) {
+    mc11s_ch_en_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1);
+
+    switch (status.ch0_en) {
+        case MC11S_CH_DISABLE:
+            *val = MC11S_CH_DISABLE;
+            break;
+
+        case MC11S_CH_ENABLE:
+            *val = MC11S_CH_ENABLE;
+            break;
+    
+        default:
+            *val = MC11S_CH_ENABLE;
+            break;
+    }
+
+	return ret;
+}
+
+/**
+ * @brief  Status of Channel1 enable bit.[set]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if channel1 is enabled else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_ch1_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val) {
+    mc11s_ch_en_t status;
+    int32_t ret;
+
+    ret = mc11s_read_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.ch1_en = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Channel1 enable bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      1 if channel1 is enabled else 0
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_ch1_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val) {
+    mc11s_ch_en_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_CH_EN, (uint8_t*) &status, 1);
+
+    switch (status.ch1_en) {
+        case MC11S_CH_DISABLE:
+            *val = MC11S_CH_DISABLE;
+            break;
+
+        case MC11S_CH_ENABLE:
+            *val = MC11S_CH_ENABLE;
+            break;
+    
+        default:
+            *val = MC11S_CH_ENABLE;
+            break;
+    }
+
+	return ret;
+}
+
+/**
+ * @brief  Reset Device.
+ *
+ * @param  ctx      read / write interface definitions
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_reset(stmdev_ctx_t *ctx) {
 	uint8_t tmp;
-	int32_t ret;
+    int32_t ret;
 
-	tmp = (val.int_pulsed << 3) | (val.comp_type << 2) | (val.sel_abs << 1);
-	ret = sths34pf80_func_cfg_write(ctx, STHS34PF80_ALGO_CONFIG, &tmp, 1);
-
-	return ret;
-}
-
-/**
- * @brief  Algo configuration.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      Algo configuration structure
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-static int32_t sths34pf80_algo_config_get(stmdev_ctx_t *ctx,
-		sths34pf80_algo_config_t *val) {
-	uint8_t tmp;
-	int32_t ret;
-
-	ret = sths34pf80_func_cfg_read(ctx, STHS34PF80_ALGO_CONFIG, &tmp, 1);
-	val->sel_abs = (tmp >> 1) & 0x1U;
-	val->comp_type = (tmp >> 2) & 0x1U;
-	val->int_pulsed = (tmp >> 3) & 0x1U;
+    tmp = MC11S_SW_RESET;
+	ret = mc11s_write_reg(ctx, MC11S_RESET, &tmp, 1);
 
 	return ret;
 }
 
 /**
- * @brief  Tobject compensation.[set]
+ * @brief  Status of Drive current bits.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Ambient compensation for object temperature (0, 1)
+ * @param  val      DRIVE_I_200uA, DRIVE_I_400uA, DRIVE_I_800uA, DRIVE_I_1mA6, DRIVE_I_2mA4, DRIVE_I_3mA2_1, DRIVE_I_3mA2_2, DRIVE_I_3mA2_3
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tobject_algo_compensation_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	sths34pf80_algo_config_t config;
-	int32_t ret;
+int32_t mc11s_drive_i_status_set(stmdev_ctx_t *ctx, mc11s_drive_i_status_t val) {
+    mc11s_drive_i_t status;
+    int32_t ret;
 
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-	if (ret != 0) {
-		return ret;
-	}
+    ret = mc11s_read_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1);
 
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	config.comp_type = val;
-	ret += sths34pf80_algo_config_set(ctx, config);
-	ret += sths34pf80_algo_reset(ctx);
+    if (ret == 0) {
+        status.i0 = ((uint8_t) val & 0x8U);
+        ret = mc11s_write_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1); 
+    }
 
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of Drive current bits.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      DRIVE_I_200uA, DRIVE_I_400uA, DRIVE_I_800uA, DRIVE_I_1mA6, DRIVE_I_2mA4, DRIVE_I_3mA2_1, DRIVE_I_3mA2_2, DRIVE_I_3mA2_3
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_drive_i_status_get(stmdev_ctx_t *ctx, mc11s_drive_i_status_t *val) {
+    mc11s_drive_i_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1);
+
+    switch (status.i0) {
+        case MC11S_DRIVE_I_200uA:
+            *val = MC11S_DRIVE_I_200uA;
+            break;
+
+        case MC11S_DRIVE_I_400uA:
+            *val = MC11S_DRIVE_I_400uA;
+            break;
+    
+        case MC11S_DRIVE_I_800uA:
+            *val = MC11S_DRIVE_I_800uA;
+            break;
+
+        case MC11S_DRIVE_I_1mA6:
+            *val = MC11S_DRIVE_I_1mA6;
+            break;
+
+        case MC11S_DRIVE_I_3mA2_1:
+        case MC11S_DRIVE_I_3mA2_2:
+        case MC11S_DRIVE_I_3mA2_3:
+            *val = MC11S_DRIVE_I_3mA2_1;
+            break;
+
+        default:
+            *val = MC11S_DRIVE_I_200uA;
+            break;
+    }
 
 	return ret;
 }
 
 /**
- * @brief  Tobject compensation.[get]
+ * @brief  Status of VDD selection bit.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Ambient compensation for object temperature (0, 1)
+ * @param  val      VDD_SEL_2V5_5V5, VDD_SEL_2V_2V5
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_tobject_algo_compensation_get(stmdev_ctx_t *ctx,
-		uint8_t *val) {
-	sths34pf80_algo_config_t config;
-	int32_t ret;
+int32_t mc11s_vdd_sel_status_set(stmdev_ctx_t *ctx, mc11s_vdd_sel_status_t val) {
+    mc11s_drive_i_t status;
+    int32_t ret;
 
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	*val = config.comp_type;
+    ret = mc11s_read_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1);
+
+    if (ret == 0) {
+        status.vdd_sel = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1); 
+    }
+
+    return ret;
+    
+}
+
+/**
+ * @brief  Status of VDD seection bit.[get]
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val      VDD_SEL_2V5_5V5, VDD_SEL_2V_2V5
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_vdd_sel_status_get(stmdev_ctx_t *ctx, mc11s_vdd_sel_status_t *val) {
+    mc11s_drive_i_t status;
+    int32_t ret;
+
+	ret = mc11s_read_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1);
+
+    switch (status.vdd_sel) {
+        case MC11S_VDD_SEL_2V5_5V5:
+            *val = MC11S_VDD_SEL_2V5_5V5;
+            break;
+
+        case MC11S_VDD_SEL_2V_2V5:
+            *val = MC11S_VDD_SEL_2V_2V5;
+            break;
+    
+        default:
+            *val = MC11S_VDD_SEL_2V5_5V5;
+            break;
+    }
 
 	return ret;
 }
 
 /**
- * @brief  presence absolute value.[set]
+ * @brief  Status of Glitch Filter enable bit.[set]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Presence absolute value (0, 1)
+ * @param  val      1 if glitch filter is enabled else 0
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_presence_abs_value_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_ctrl1_t ctrl1;
-	uint8_t odr;
-	sths34pf80_algo_config_t config;
-	int32_t ret;
+int32_t mc11s_glitch_filter_status_set(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t val) {
+    mc11s_glitch_filter_en_t status;
+    int32_t ret;
 
-	/* Save current odr and enter PD mode */
-	ret = sths34pf80_read_reg(ctx, STHS34PF80_CTRL1, (uint8_t*) &ctrl1, 1);
-	odr = ctrl1.odr;
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, 0);
-	if (ret != 0) {
-		return ret;
-	}
+    ret = mc11s_read_reg(ctx, MC11S_GLITCH_FILTER_EN, (uint8_t*) &status, 1);
 
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	config.sel_abs = val;
-	ret += sths34pf80_algo_config_set(ctx, config);
-	ret += sths34pf80_algo_reset(ctx);
+    if (ret == 0) {
+        status.filter_en = (uint8_t) val;
+        ret = mc11s_write_reg(ctx, MC11S_GLITCH_FILTER_EN, (uint8_t*) &status, 1); 
+    }
 
-	/* Set saved odr back */
-	ret += sths34pf80_odr_safe_set(ctx, ctrl1, odr);
-
-	return ret;
+    return ret;
+    
 }
 
 /**
- * @brief  presence absolute value.[get]
+ * @brief  Status of Glitch Filter enable bit.[get]
  *
  * @param  ctx      read / write interface definitions
- * @param  val      Presence absolute value (0, 1)
+ * @param  val      1 if glitch filter is enabled else 0
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t sths34pf80_presence_abs_value_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	sths34pf80_algo_config_t config;
-	int32_t ret;
+int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t *val) {
+    mc11s_glitch_filter_en_t status;
+    int32_t ret;
 
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	*val = config.sel_abs;
+	ret = mc11s_read_reg(ctx, MC11S_GLITCH_FILTER_EN, (uint8_t*) &status, 1);
+
+    switch (status.filter_en) {
+        case MC11S_GLITCH_FILTER_DISABLE:
+            *val = MC11S_GLITCH_FILTER_DISABLE;
+            break;
+
+        case MC11S_GLITCH_FILTER_ENABLE:
+            *val = MC11S_GLITCH_FILTER_ENABLE;
+            break;
+    
+        default:
+            *val = MC11S_GLITCH_FILTER_ENABLE;
+            break;
+    }
 
 	return ret;
 }
 
-/**
- * @brief  int_or mode.[set]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      int_pulsed value (0, 1)
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_or_pulsed_set(stmdev_ctx_t *ctx, uint8_t val) {
-	sths34pf80_algo_config_t config;
-	int32_t ret;
-
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	config.int_pulsed = val;
-	ret += sths34pf80_algo_config_set(ctx, config);
-
-	return ret;
-}
-
-/**
- * @brief  int_or mode.[get]
- *
- * @param  ctx      read / write interface definitions
- * @param  val      int_pulsed value (0, 1)
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_int_or_pulsed_get(stmdev_ctx_t *ctx, uint8_t *val) {
-	sths34pf80_algo_config_t config;
-	int32_t ret;
-
-	ret = sths34pf80_algo_config_get(ctx, &config);
-	*val = config.int_pulsed;
-
-	return ret;
-}
-
-/**
- * @brief  Reset algo
- *
- * @param  ctx      read / write interface definitions
- * @param  val      reset algo structure
- * @retval          interface status (MANDATORY: return 0 -> no Error)
- *
- */
-int32_t sths34pf80_algo_reset(stmdev_ctx_t *ctx) {
-	uint8_t tmp;
-	int32_t ret;
-
-	tmp = 1;
-	ret = sths34pf80_func_cfg_write(ctx, STHS34PF80_RESET_ALGO, &tmp, 1);
-
-	return ret;
-}
 
 /**
  * @}
