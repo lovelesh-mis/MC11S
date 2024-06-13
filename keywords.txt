@@ -14,121 +14,99 @@ SFE_BusI2C      KEYWORD1
 begin                       KEYWORD2
 isConnected                 KEYWORD2
 getCh0DataReady             KEYWORD2
-getCh1DataReady             KEYWORD2 		
-        int32_t getAlertStatus(mc11s_alert_status_t *statusVal);	// Returns the status of the device
-		int32_t getTrhOfDStatus(mc11s_trh_of_d_status_t *statusVal);		// Returns the status of Data1 threshold overflow bit
-		int32_t reset();	// Resets the chip
-
-		int32_t getCh0Data(uint16_t *ch0Val);	// Returns Channel0 raw data
-		int32_t getCh1Data(uint16_t *ch1Val);	// Returns Channel1 raw data
-        
-		int32_t getDeviceID(uint16_t *devId);	// Returns the ID of the MC11S
-
-		int32_t setRcnt(uint16_t val);			// Sets RCNT value
-		int32_t getRcnt(uint16_t *val);			// Returns RCNT value
-
-		int32_t setScnt(uint8_t val);			// Sets SCNT Value
-		int32_t getScnt(uint8_t *val);			// Returns SCNT Value
-
-		int32_t setFinDiv(mc11s_fin_div_val_t val);	 	// Sets Fin_div
-		int32_t getFinDiv(mc11s_fin_div_val_t *val);	// Returns Fin_Div
-
-		
-		int32_t setFrefDiv(uint8_t val);		// Sets the Fref_div
-		int32_t getFrefDiv(uint8_t *val);		// Returns Fref_div
-
-		int32_t setTrh(uint8_t val);			// Sets Threshold high value
-		int32_t getTrh(uint8_t *val);			// Returns Threshold high value
-
-		int32_t setTrl(uint8_t val);			// Sets Threshold low value
-		int32_t getTrl(uint8_t *val);			// Returns Threshold low value
-
-		int32_t setRefClkSel(mc11s_ref_clk_sel_status_t val);	// Sets Reference Clock Selector
-		int32_t getRefClkSel(mc11s_ref_clk_sel_status_t *val);	// Returns Reference Clock Selector
-
-		int32_t setIntbStatus(mc11s_intb_en_status_t val);		// Sets Interrupt enable bit
-		int32_t getIntbStatus(mc11s_intb_en_status_t *val);		// Returns Inerrupt enable bit
-
-		int32_t setIntbMode(mc11s_intb_mode_status_t val);		// Sets Interrupt mode
-		int32_t getIntbMode(mc11s_intb_mode_status_t *val);		// Returns Interrupt mode
-
-        int32_t setConvTime(mc11s_conv_time_status_t val);		// Sets Conversion Time
-		int32_t getConvTime(mc11s_conv_time_status_t *val);		// Returns Conversion Time
-
-		int32_t setConvMode(mc11s_conv_mode_status_t val);		// Sets Conversion Mode
-		int32_t getConvMode(mc11s_conv_mode_status_t *val);		// Returns Conversion Mode
-
-		int32_t setCh0En(mc11s_ch_en_status_t val);				// Sets Channel0 enable bit
-		int32_t getCh0En(mc11s_ch_en_status_t *val);			// Returns Channel0 enable bit
-
-		int32_t setCh1En(mc11s_ch_en_status_t val);				// Sets Channel1 enable bit
-		int32_t getCh1En(mc11s_ch_en_status_t *val);			// Returns Channel1 enable bit
-
-		int32_t setDriveCurrent(mc11s_drive_i_status_t val);	// Sets Drive current
-		int32_t getDriveCurrent(mc11s_drive_i_status_t *val);	// Returns Drive Current
-
-
-		int32_t setVddSel(mc11s_vdd_sel_status_t val);			// Sets VDD Selection bits
-		int32_t getVddSel(mc11s_vdd_sel_status_t *val);			// Returns VDD Selection bits
-
-		int32_t setGlitchFilter(mc11s_glitch_filter_status_t val);	// Sets Glitch Filter Enable bit
-		int32_t getGlitchFilter(mc11s_glitch_filter_status_t *val);	// Returns Glitch Filter Enable bit
-
-        int32_t writeFunctionConfiguration(uint8_t addr, uint8_t *data, uint8_t len); // Write interface definition
-        int32_t readFunctionConfiguration(uint8_t addr, uint8_t *data, uint8_t len); // Read interface defintions
+getCh1DataReady             KEYWORD2
+getAlertStatus				KEYWORD2
+getTrhOfDStatus				KEYWORD2
+reset						KEYWORD2
+getCh0Data					KEYWORD2
+getCh1Data					KEYWORD2
+getDeviceID					KEYWORD2
+setRcnt						KEYWORD2
+getRcnt						KEYWORD2
+setScnt						KEYWORD2
+getScnt						KEYWORD2
+setFinDiv					KEYWORD2
+getFinDiv					KEYWORD2
+setFrefDiv					KEYWORD2
+getFrefDiv					KEYWORD2
+setTrh						KEYWORD2
+getTrh						KEYWORD2
+setTrl						KEYWORD2
+getTrl						KEYWORD2
+setRefClkSel				KEYWORD2
+getRefClkSel				KEYWORD2
+setIntbStatus				KEYWORD2
+getIntbStatus				KEYWORD2
+setIntbMode					KEYWORD2
+getIntbMode					KEYWORD2
+setConvTime					KEYWORD2
+getConvTime					KEYWORD2
+setConvMode					KEYWORD2
+getConvMode					KEYWORD2
+setCh0En					KEYWORD2
+getCh0En					KEYWORD2
+setCh1En					KEYWORD2
+getCh1En					KEYWORD2
+setDriveCurrent				KEYWORD2
+getDriveCurrent				KEYWORD2
+setVddSel					KEYWORD2
+getVddSel					KEYWORD2
+setGlitchFilter				KEYWORD2
+getGlitchFilter				KEYWORD2
+writeFunctionConfiguration	KEYWORD2
+readFunctionConfiguration	KEYWORD2
 
 #########################################################
 # Constants
 #########################################################
 
-STHS34PF80_AVG_TMOS_2 LITERAL1
-STHS34PF80_AVG_TMOS_8 LITERAL1
-STHS34PF80_AVG_TMOS_32 LITERAL1
-STHS34PF80_AVG_TMOS_128 LITERAL1
-STHS34PF80_AVG_TMOS_256 LITERAL1
-STHS34PF80_AVG_TMOS_512 LITERAL1
-STHS34PF80_AVG_TMOS_1024 LITERAL1
-STHS34PF80_AVG_TMOS_2048 LITERAL1
-STHS34PF80_AVG_T_8 LITERAL1
-STHS34PF80_AVG_T_4 LITERAL1
-STHS34PF80_AVG_T_2 LITERAL1
-STHS34PF80_AVG_T_1 LITERAL1
-STHS34PF80_GAIN_WIDE_MODE LITERAL1
-STHS34PF80_GAIN_DEFAULT_MODE LITERAL1
-STHS34PF80_TMOS_ODR_OFF LITERAL1
-STHS34PF80_TMOS_ODR_AT_0Hz25 LITERAL1
-STHS34PF80_TMOS_ODR_AT_0Hz50 LITERAL1
-STHS34PF80_TMOS_ODR_AT_1Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_2Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_4Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_8Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_15Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_30Hz LITERAL1
-STHS34PF80_TMOS_IDLE_MODE LITERAL1
-STHS34PF80_TMOS_ONE_SHOT LITERAL1
-STHS34PF80_MAIN_MEM_BANK LITERAL1
-STHS34PF80_EMBED_FUNC_MEM_BANK LITERAL1
-STHS34PF80_LPF_ODR_DIV_9 LITERAL1
-STHS34PF80_LPF_ODR_DIV_20 LITERAL1
-STHS34PF80_LPF_ODR_DIV_50 LITERAL1
-STHS34PF80_LPF_ODR_DIV_100 LITERAL1
-STHS34PF80_LPF_ODR_DIV_200 LITERAL1
-STHS34PF80_LPF_ODR_DIV_400 LITERAL1
-STHS34PF80_LPF_ODR_DIV_800 LITERAL1
-STHS34PF80_TMOS_INT_HIZ LITERAL1
-STHS34PF80_TMOS_INT_DRDY LITERAL1
-STHS34PF80_TMOS_INT_OR LITERAL1
-STHS34PF80_TMOS_INT_NONE LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK LITERAL1
-STHS34PF80_TMOS_INT_MOTION LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK_MOTION LITERAL1
-STHS34PF80_TMOS_INT_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_MOTION_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_ALL LITERAL1
-STHS34PF80_PUSH_PULL LITERAL1
-STHS34PF80_OPEN_DRAIN LITERAL1
-STHS34PF80_ACTIVE_HIGH LITERAL1
-STHS34PF80_ACTIVE_LOW LITERAL1
-STHS34PF80_DRDY_PULSED LITERAL1
-STHS34PF80_DRDY_LATCHED LITERAL1
+MC11S_FIN_DIV_2       		LITERAL1
+MC11S_FIN_DIV_4				LITERAL1
+MC11S_FIN_DIV_8				LITERAL1
+MC11S_FIN_DIV_16			LITERAL1
+MC11S_FIN_DIV_32			LITERAL1
+MC11S_FIN_DIV_64			LITERAL1
+MC11S_FIN_DIV_128			LITERAL1
+MC11S_FIN_DIV_256			LITERAL1
+MC11S_FIN_DIV_2				LITERAL1
+MC11S_FIN_DIV_4				LITERAL1
+MC11S_FIN_DIV_8				LITERAL1
+MC11S_FIN_DIV_16			LITERAL1
+MC11S_FIN_DIV_32			LITERAL1
+MC11S_FIN_DIV_64			LITERAL1
+MC11S_FIN_DIV_128			LITERAL1
+MC11S_FIN_DIV_256			LITERAL1
+MC11S_SEL_INT_CLK			LITERAL1
+MC11S_SEL_EXT_CLK			LITERAL1
+MC11S_INTB_DISABLE			LITERAL1
+MC11S_INTB_ENABLE			LITERAL1
+MC11S_INTB_ALARM			LITERAL1
+MC11S_INTB_CONV				LITERAL1
+MC11S_CONV_60S				LITERAL1
+MC11S_CONV_30S				LITERAL1
+MC11S_CONV_10S				LITERAL1
+MC11S_CONV_5S				LITERAL1
+MC11S_CONV_2S				LITERAL1
+MC11S_CONV_1S				LITERAL1
+MC11S_CONV_0S5				LITERAL1
+MC11S_CONV_0S25				LITERAL1
+MC11S_CONT_CONV				LITERAL1
+MC11S_STOP_CONV				LITERAL1
+MC11S_CONT_CONV_RB			LITERAL1
+MC11S_SINGLE_CONV			LITERAL1
+MC11S_CH_DISABLE			LITERAL1
+MC11S_CH_ENABLE				LITERAL1
+MC11S_SW_RESET				LITERAL1
+MC11S_RESET_COMP			LITERAL1
+MC11S_DRIVE_I_200uA			LITERAL1
+MC11S_DRIVE_I_400uA			LITERAL1
+MC11S_DRIVE_I_800uA			LITERAL1
+MC11S_DRIVE_I_1mA6			LITERAL1
+MC11S_DRIVE_I_2mA4			LITERAL1
+MC11S_DRIVE_I_3mA2_1		LITERAL1
+MC11S_DRIVE_I_3mA2_2		LITERAL1
+MC11S_DRIVE_I_3mA2_3		LITERAL1
+MC11S_VDD_SEL_2V5_5V5		LITERAL1
+MC11S_VDD_SEL_2V_2V5		LITERAL1
+MC11S_GLITCH_FILTER_DISABLE	LITERAL1
+MC11S_GLITCH_FILTER_ENABLE	LITERAL1
