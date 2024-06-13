@@ -110,7 +110,7 @@ typedef struct {
 
 typedef int32_t (*stmdev_write_ptr)(void *, uint8_t, const uint8_t *, uint16_t);
 typedef int32_t (*stmdev_read_ptr)(void *, uint8_t, uint8_t *, uint16_t);
-typedef void (*stmdev_mdelay_ptr)(uint32_t millisec);
+// typedef void (*stmdev_mdelay_ptr)(uint32_t millisec);
 
 typedef struct
 {
@@ -118,7 +118,7 @@ typedef struct
   stmdev_write_ptr  write_reg;
   stmdev_read_ptr   read_reg;
   /** Component optional fields **/
-  stmdev_mdelay_ptr   mdelay;
+  // stmdev_mdelay_ptr   mdelay;
   /** Customizable optional pointer **/
   void *handle;
 } stmdev_ctx_t;
@@ -150,11 +150,12 @@ typedef struct
   uint8_t data;
 } ucf_line_t;
 
-
 /**
  * @}
  *
  */
+
+#endif /* MEMS_UCF_SHARED_TYPES */
 
 /** @defgroup MC11S_Infos
  * @{
@@ -167,8 +168,8 @@ typedef struct
 // #define MC11S_I2C_ADD		                      0xD4U	// if ADDR connected to SDA
 // #define MC11S_I2C_ADD		                      0xD6U	// if ADDR connected to SCL
 
-/** Device Identification (Who am I) **/
-#define STHS34PF80_ID                         0xD
+/** Device Identification **/
+#define MC11S_ID                              0x0120
 
 /**
  * @}
@@ -391,7 +392,7 @@ typedef struct {
 
 typedef union {
   mc11s_data_ch0_msb_t      data_ch0_msb;
-  mc11s_data_ch0_lsb_t      data_ch0_msb;
+  mc11s_data_ch0_lsb_t      data_ch0_lsb;
   mc11s_data_ch1_msb_t      data_ch1_msb;
   mc11s_data_ch1_lsb_t      data_ch1_lsb;
   mc11s_rcnt_msb_t          rcnt_msb;

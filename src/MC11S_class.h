@@ -1,20 +1,50 @@
-#########################################################
-# Syntax Coloring Map for MIS MC11S                     #
-#########################################################
-# Class
-#########################################################
+/*
+	MC11S Large-range, dual channel, differential capacitive sensor library for Arduino
+	Lovelesh, MIS Electroncis
+	
+The MIT License (MIT)
 
-MC11S           KEYWORD1
-SFE_BusI2C      KEYWORD1
+Copyright (c) 2015 thingTronics Limited
 
-#########################################################
-# Methods and Functions
-#########################################################
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-begin                       KEYWORD2
-isConnected                 KEYWORD2
-getCh0DataReady             KEYWORD2
-getCh1DataReady             KEYWORD2 		
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+version 0.1
+*/
+
+#ifndef __MC11S_Library_H__
+#define __MC11S_Library_H__
+
+#include "mc11s_api/mc11s_reg.h"
+#include "sfe_bus.h"
+
+
+// define a standard i2c address (7 bit) macro
+
+#define MC11S_I2C_ADDRESS (MC11S_I2C_ADD >> 1)
+
+class MC11S {
+	public:
+		int32_t begin();	// Resets the device and sets up for operation
+		int32_t isConnected();	// Determined if the device is connected
+
+		int32_t getCh0DataReady(mc11s_drdy_ch0_status_t *drdy);		// Returns if the data of Ch0 is ready to be read or not
+		int32_t getCh1DataReady(mc11s_drdy_ch1_status_t *drdy);		// Returns if the data of Ch1 is ready to be read or not 		
         int32_t getAlertStatus(mc11s_alert_status_t *statusVal);	// Returns the status of the device
 		int32_t getTrhOfDStatus(mc11s_trh_of_d_status_t *statusVal);		// Returns the status of Data1 threshold overflow bit
 		int32_t reset();	// Resets the chip
@@ -77,58 +107,8 @@ getCh1DataReady             KEYWORD2
         int32_t writeFunctionConfiguration(uint8_t addr, uint8_t *data, uint8_t len); // Write interface definition
         int32_t readFunctionConfiguration(uint8_t addr, uint8_t *data, uint8_t len); // Read interface defintions
 
-#########################################################
-# Constants
-#########################################################
+    protected: 
+        stmdev_ctx_t sensor;
+};
 
-STHS34PF80_AVG_TMOS_2 LITERAL1
-STHS34PF80_AVG_TMOS_8 LITERAL1
-STHS34PF80_AVG_TMOS_32 LITERAL1
-STHS34PF80_AVG_TMOS_128 LITERAL1
-STHS34PF80_AVG_TMOS_256 LITERAL1
-STHS34PF80_AVG_TMOS_512 LITERAL1
-STHS34PF80_AVG_TMOS_1024 LITERAL1
-STHS34PF80_AVG_TMOS_2048 LITERAL1
-STHS34PF80_AVG_T_8 LITERAL1
-STHS34PF80_AVG_T_4 LITERAL1
-STHS34PF80_AVG_T_2 LITERAL1
-STHS34PF80_AVG_T_1 LITERAL1
-STHS34PF80_GAIN_WIDE_MODE LITERAL1
-STHS34PF80_GAIN_DEFAULT_MODE LITERAL1
-STHS34PF80_TMOS_ODR_OFF LITERAL1
-STHS34PF80_TMOS_ODR_AT_0Hz25 LITERAL1
-STHS34PF80_TMOS_ODR_AT_0Hz50 LITERAL1
-STHS34PF80_TMOS_ODR_AT_1Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_2Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_4Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_8Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_15Hz LITERAL1
-STHS34PF80_TMOS_ODR_AT_30Hz LITERAL1
-STHS34PF80_TMOS_IDLE_MODE LITERAL1
-STHS34PF80_TMOS_ONE_SHOT LITERAL1
-STHS34PF80_MAIN_MEM_BANK LITERAL1
-STHS34PF80_EMBED_FUNC_MEM_BANK LITERAL1
-STHS34PF80_LPF_ODR_DIV_9 LITERAL1
-STHS34PF80_LPF_ODR_DIV_20 LITERAL1
-STHS34PF80_LPF_ODR_DIV_50 LITERAL1
-STHS34PF80_LPF_ODR_DIV_100 LITERAL1
-STHS34PF80_LPF_ODR_DIV_200 LITERAL1
-STHS34PF80_LPF_ODR_DIV_400 LITERAL1
-STHS34PF80_LPF_ODR_DIV_800 LITERAL1
-STHS34PF80_TMOS_INT_HIZ LITERAL1
-STHS34PF80_TMOS_INT_DRDY LITERAL1
-STHS34PF80_TMOS_INT_OR LITERAL1
-STHS34PF80_TMOS_INT_NONE LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK LITERAL1
-STHS34PF80_TMOS_INT_MOTION LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK_MOTION LITERAL1
-STHS34PF80_TMOS_INT_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_TSHOCK_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_MOTION_PRESENCE LITERAL1
-STHS34PF80_TMOS_INT_ALL LITERAL1
-STHS34PF80_PUSH_PULL LITERAL1
-STHS34PF80_OPEN_DRAIN LITERAL1
-STHS34PF80_ACTIVE_HIGH LITERAL1
-STHS34PF80_ACTIVE_LOW LITERAL1
-STHS34PF80_DRDY_PULSED LITERAL1
-STHS34PF80_DRDY_LATCHED LITERAL1
+#endif

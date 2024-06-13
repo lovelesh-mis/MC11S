@@ -53,7 +53,7 @@
 int32_t __weak mc11s_read_reg(stmdev_ctx_t *ctx, uint8_t reg, uint8_t *data, uint16_t len) {
 	int32_t ret;
 
-	ret = ctx->read_reg(ctx->handle, MC11S_I2C_ADD, reg, data, len);
+	ret = ctx->read_reg(ctx->handle, reg, data, len);
 
 	return ret;
 }
@@ -71,7 +71,7 @@ int32_t __weak mc11s_read_reg(stmdev_ctx_t *ctx, uint8_t reg, uint8_t *data, uin
 int32_t __weak mc11s_write_reg(stmdev_ctx_t *ctx, uint8_t reg, uint8_t *data, uint16_t len) {
 	int32_t ret;
 
-	ret = ctx->write_reg(ctx->handle, MC11S_I2C_ADD, reg, data, len);
+	ret = ctx->write_reg(ctx->handle, reg, data, len);
 
 	return ret;
 }
@@ -515,7 +515,7 @@ int32_t mc11s_ref_clk_sel_status_get(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status
             *val = MC11S_SEL_INT_CLK;
             break;
 
-        case MC11s_SEL_EXT_CLK:
+        case MC11S_SEL_EXT_CLK:
             *val = MC11S_SEL_EXT_CLK;
             break;
     
@@ -660,7 +660,7 @@ int32_t mc11s_conv_time_status_set(stmdev_ctx_t *ctx, mc11s_conv_time_status_t v
 }
 
 /**
- * @brief  Status of Interrupt Mode bit.[get]
+ * @brief  Status of Conversion time bits.[get]
  *
  * @param  ctx      read / write interface definitions
  * @param  val      CONV_60S, CONV_30S, CONV_10S, CONV_5S, CONV_2S, CONV_1S, CONV_0S5, CONV_0S25

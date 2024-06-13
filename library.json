@@ -1,11 +1,11 @@
 {
-  "name": "Si7006",
-  "keywords": "sensor, temperature, humidity",
-  "description": "A temperature and humidity sensor library for Si7006",
+  "name": "MC11S",
+  "keywords": "sensor, capacitance, level sensing, flood detection",
+  "description": "The MC11S is low-cost, low-power, high-resolution capacitive sensing chip for water flooding detection and liquid level sensing",
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/automote/Si7006"
+    "url": "https://github.com/lovelesh-mis/MC11S"
   },
   "frameworks": "arduino",
   "platforms": "atmelavr",
