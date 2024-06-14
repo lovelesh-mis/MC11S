@@ -31,7 +31,7 @@ version 0.1
 #define __MC11S_Library_H__
 
 #include "mc11s_api/mc11s_reg.h"
-#include "sfe_bus.h"
+//#include "sfe_bus.h"
 
 
 // define a standard i2c address (7 bit) macro

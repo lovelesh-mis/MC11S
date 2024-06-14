@@ -33,23 +33,23 @@ namespace sfe_MC11S
 {
 // The following abstract class is used an interface for upstream
 // implementation.
-class QwIDeviceBus
-{
-  public:
-    virtual bool ping(uint8_t address) = 0;
+// class QwIDeviceBus
+// {
+//   public:
+//     virtual bool ping(uint8_t address) = 0;
 
-    virtual bool writeRegisterByte(uint8_t address, uint8_t offset, uint8_t data) = 0;
+//     virtual bool writeRegisterByte(uint8_t address, uint8_t offset, uint8_t data) = 0;
 
-    virtual int writeRegisterRegion(uint8_t address, uint8_t offset, const uint8_t *data, uint16_t length) = 0;
+//     virtual int writeRegisterRegion(uint8_t address, uint8_t offset, const uint8_t *data, uint16_t length) = 0;
 
-    virtual int writeRegisterRegion(uint8_t address, uint8_t offset, uint8_t data, uint16_t length) = 0;
+//     virtual int writeRegisterRegion(uint8_t address, uint8_t offset, uint8_t data, uint16_t length) = 0;
 
-    virtual int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
-};
+//     virtual int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
+// };
 
 // The QwI2C device defines behavior for I2C implementation based around the
 // TwoWire class (Wire). This is Arduino specific.
-class QwI2C : public QwIDeviceBus
+class QwI2C
 {
   public:
     QwI2C(void);

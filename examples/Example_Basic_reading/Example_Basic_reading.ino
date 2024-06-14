@@ -11,7 +11,7 @@
 
   Development environment specifics:
 
-  IDE: Arduino 2.2.1
+  IDE: Arduino 1.8.19
 
   Hardware Connections:
 
