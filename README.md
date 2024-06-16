@@ -1,8 +1,9 @@
 MIS Electroncis MC11S Arduino Library
 ========================================
 
+This is the library for the Mysentech MC11S capacitive sensor with I<sup>2</sup>C interface. Borrowed heavily from [Sparkfun STHS34PF80 Arduino Library](https://github.com/sparkfun/SparkFun_STHS34PF80_Arduino_Library).
 
-This is the library for the Mysentech MC11S capacitive sensor with I<sup>2</sup>C interface. 
+Note: This library can be used as a reference for developing STMCubeIDE compatible driver that can work seamlessly with Arduino IDE.
 
 Repository Contents
 -------------------
@@ -18,7 +19,7 @@ License Information
 
 This product is _**open source**_! 
 
-Please review the LICENSE.md file for license information. 
+Please review the LICENSE file for license information. 
 
 If you have any questions or concerns on licensing, please contact technical support on our [email](lovelesh@miselectronics.com).
 

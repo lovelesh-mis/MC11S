@@ -39,7 +39,6 @@ MC11S_I2C mySensor;
 uint16_t ch0_data = 0;
 int16_t ch1_data = 0;
 
-
 void setup()
 {
     Serial.begin(115200);

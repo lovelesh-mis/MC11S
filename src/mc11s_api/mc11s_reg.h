@@ -489,19 +489,22 @@ int32_t mc11s_trl_set(stmdev_ctx_t *ctx, uint8_t val);
 int32_t mc11s_trl_get(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum {
-  MC11S_SEL_INT_CLK = 0x0,  MC11S_SEL_EXT_CLK = 0x1,
+  MC11S_SEL_INT_CLK = 0x0,  
+  MC11S_SEL_EXT_CLK = 0x1,
 } mc11s_ref_clk_sel_status_t;
 int32_t mc11s_ref_clk_sel_status_set(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t val);
 int32_t mc11s_ref_clk_sel_status_get(stmdev_ctx_t *ctx, mc11s_ref_clk_sel_status_t *val);
 
 typedef enum {
-  MC11S_INTB_DISABLE = 0x0,  MC11S_INTB_ENABLE = 0x1,
+  MC11S_INTB_DISABLE = 0x0,  
+  MC11S_INTB_ENABLE = 0x1,
 } mc11s_intb_en_status_t;
 int32_t mc11s_intb_en_status_set(stmdev_ctx_t *ctx, mc11s_intb_en_status_t val);
 int32_t mc11s_intb_en_status_get(stmdev_ctx_t *ctx, mc11s_intb_en_status_t *val);
 
 typedef enum {
-  MC11S_INTB_ALARM = 0x0,  MC11S_INTB_CONV = 0x1,
+  MC11S_INTB_ALARM = 0x0,  
+  MC11S_INTB_CONV = 0x1,
 } mc11s_intb_mode_status_t;
 int32_t mc11s_intb_mode_status_set(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t val);
 int32_t mc11s_intb_mode_status_get(stmdev_ctx_t *ctx, mc11s_intb_mode_status_t *val);
@@ -529,7 +532,8 @@ int32_t mc11s_conv_mode_status_set(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t v
 int32_t mc11s_conv_mode_status_get(stmdev_ctx_t *ctx, mc11s_conv_mode_status_t *val);
 
 typedef enum {
-  MC11S_CH_DISABLE = 0x0,  MC11S_CH_ENABLE = 0x1,
+  MC11S_CH_DISABLE = 0x0,  
+  MC11S_CH_ENABLE = 0x1,
 } mc11s_ch_en_status_t;
 int32_t mc11s_ch0_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val);
 int32_t mc11s_ch0_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val);
@@ -538,7 +542,8 @@ int32_t mc11s_ch1_en_status_set(stmdev_ctx_t *ctx, mc11s_ch_en_status_t val);
 int32_t mc11s_ch1_en_status_get(stmdev_ctx_t *ctx, mc11s_ch_en_status_t *val);
 
 typedef enum {
-  MC11S_SW_RESET = 0x7A, MC11S_RESET_COMP = 0x00,
+  MC11S_SW_RESET = 0x7A, 
+  MC11S_RESET_COMP = 0x00,
 } mc11s_reset_status_t;
 int32_t mc11s_reset(stmdev_ctx_t *ctx);
 
