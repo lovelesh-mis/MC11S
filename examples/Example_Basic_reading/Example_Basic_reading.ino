@@ -16,6 +16,9 @@
   Hardware Connections:
 
   ARDUINO --> MC11S
+  ADC (A2) --> VT
+  INT (A0) --> INTB
+  GPIO (D4) --> SD 
   SDA (A4) --> SDA
   SCL (A5) --> SCL
   3.3V --> 3.3V
@@ -41,6 +44,7 @@ int16_t ch1_data = 0;
 
 void setup()
 {
+    
     Serial.begin(115200);
     Serial.println("MC11S Example 1: Basic Readings");
 

@@ -383,7 +383,7 @@ typedef struct {
 #endif /* DRV_BYTE_ORDER */
 } mc11s_device_id_lsb_t;
 
-
+/* Sensor Parameter */
 #define K                                     0.362
 /**
  * @}
@@ -573,6 +573,10 @@ typedef enum {
 } mc11s_glitch_filter_status_t;
 int32_t mc11s_glitch_filter_status_set(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t val);
 int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_status_t *val);
+
+/* Higher Level APIs*/
+int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *Cref, float *Csensor);
+int32_t mc11s_coef_fix_get(stmdev_ctx_t *ctx, uint16_t val0, uint16_t val1, float *Coef_fix);
 
 #ifdef __cplusplus
 }

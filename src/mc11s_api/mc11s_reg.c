@@ -916,7 +916,7 @@ int32_t mc11s_drive_i_status_set(stmdev_ctx_t *ctx, mc11s_drive_i_status_t val) 
     ret = mc11s_read_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1);
 
     if (ret == 0) {
-        status.i0 = ((uint8_t) val & 0x8U);
+        status.i0 = ((uint8_t) val & 0xFU);
         ret = mc11s_write_reg(ctx, MC11S_DRIVE_I, (uint8_t*) &status, 1); 
     }
 
@@ -1086,7 +1086,7 @@ int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_st
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t mc11s_calculate_capacitance(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
+int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
     // C(sensor): 8.670 pf F1(ref):26.036 MHz F2(sensor):23.682 MHz VBE: 626.08 mV
     int32_t ret;
 
@@ -1169,7 +1169,56 @@ int32_t mc11s_calculate_capacitance(stmdev_ctx_t *ctx, float *Cref, float *Csens
     *Cref = (float) (K * Idrv / (data_ch1 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
 
     // Step 4: Calculate Csensor
-    *Csensor = (float) (K * Idrv / (data_ch0 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
+    //*Csensor = (float) (K * Idrv / (data_ch0 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
+
+    float Coef_fix;
+    ret += mc11s_coef_fix_get(ctx, data_ch0, data_ch1, &Coef_fix);
+
+    *Csensor = (data_ch1 / data_ch0) * (*Cref) * Coef_fix;
+
+    return ret;
+}
+
+/**
+ * @brief  Return the value of Coef_fix for a given ratio of Data_Ch1 / Data_Ch0
+ *
+ * @param  ctx      read / write interface definitions
+ * @param  val0     Channel0 Data Register value
+ * @param  val1     Channel1 Data Register value
+ * @param  Coef_fix Coef_fix value based on the table in the datasheet
+ * @retval          interface status (MANDATORY: return 0 -> no Error)
+ *
+ */
+int32_t mc11s_coef_fix_get(stmdev_ctx_t *ctx, uint16_t val0, uint16_t val1, float *Coef_fix) {
+    float ratio;
+    int32_t ret;
+
+    ratio = (float) val1 / val0;
+
+    if (ratio >= 0.529 && ratio < 0.623) {
+        *Coef_fix = 0.946;
+    } else if (ratio >= 0.623 && ratio < 0.717) {
+        *Coef_fix = 0.963;
+    } else if (ratio >= 0.717 && ratio < 0.812) {
+        *Coef_fix = 0.976;
+    } else if (ratio >= 0.812 && ratio < 0.906) {
+        *Coef_fix = 0.985;
+    } else if (ratio >= 0.906 && ratio < 1.000) {
+        *Coef_fix = 0.993;
+    } else if (ratio >= 1.000 && ratio < 1.094) {
+        *Coef_fix = 1.000;
+    } else if (ratio >= 1.094 && ratio < 1.187) {
+        *Coef_fix = 1.005;
+    } else if (ratio >= 1.187 && ratio < 1.281) {
+        *Coef_fix = 1.011;
+    } else if (ratio >= 1.281 && ratio < 1.373) {
+        *Coef_fix = 1.015;
+    } else if (ratio >= 1.373 && ratio < 1.466) {
+        *Coef_fix = 1.019;
+    } else if (ratio >= 1.466) {
+        *Coef_fix = 1.023;
+    } else
+        *Coef_fix = 1.000;
 
     return ret;
 }

@@ -423,6 +423,27 @@ int32_t MC11S::getGlitchFilter(mc11s_glitch_filter_status_t *val) {
 }
 
 /**
+ * @brief  			Calculates capacitance of ref and sensor
+ * @param	val0	Reference Capacitor	value
+ * @param	val1	Sensor Capacitance Value
+ * @retval  		Error code (0 -> no Error)
+ */
+int32_t MC11S::getCapacitance(float *val0, float *val1) {
+	return mc11s_capacitance_get(&sensor, val0, val1);
+}
+
+/**
+ * @brief  			Gets the Coef fix for the given ratio of data chaannels
+ * @param	val0	Channel0 data
+ * @param	val1	Channel1 data
+ * @param   val2	Coef fix for the given ratio 
+ * @retval  		Error code (0 -> no Error)
+ */
+int32_t MC11S::getCoef(uint16_t val0, uint16_t val1, float *val2) {
+	return mc11s_coef_fix_get(&sensor, val0, val1, val2);
+}
+
+/**
  * @brief  			This function writes/sets data to the desired address for the desired number of bytes.
  * @param	addr	register address
  * @param	data	data to be written
