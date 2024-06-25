@@ -12,12 +12,13 @@ Development environment specifics:
 
 
 #include "mc11s_class.h"
-//#include "sfe_bus.h"
-#include <Arduino.h>
 #include <Wire.h>
 
-// namespace mc11s 
-// {
+// #define DEBUG
+#ifdef DEBUG
+    #include <Arduino.h>
+#endif
+
 class MC11S_I2C : public MC11S 
 {
     public: 
@@ -32,4 +33,3 @@ class MC11S_I2C : public MC11S
 };
 
 #endif
-// }

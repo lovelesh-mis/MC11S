@@ -18,6 +18,7 @@
  */
 
 #include "mc11s_reg.h"
+#include <Arduino.h>
 
 /**
  * @defgroup  MC11S
@@ -1081,18 +1082,19 @@ int32_t mc11s_glitch_filter_status_get(stmdev_ctx_t *ctx, mc11s_glitch_filter_st
  * @brief  Calculate capacitance of ref and sensor.
  *
  * @param  ctx      read / write interface definitions
- * @param  Cref     Capacitance of reference
- * @param  Csensor  Capacitance of sensor
+ * @param  C_ch0    Capacitance of channel 0
+ * @param  C_ch1    Capacitance of channel 1
  * @retval          interface status (MANDATORY: return 0 -> no Error)
  *
  */
-int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
+int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *C_ch0, float *C_ch1) {
     // C(sensor): 8.670 pf F1(ref):26.036 MHz F2(sensor):23.682 MHz VBE: 626.08 mV
     int32_t ret;
 
-    mc11s_conv_mode_status_t val = MC11S_STOP_CONV;
-    // Step 1: Stop Conversion 
-    ret = mc11s_conv_mode_status_set(ctx, val);
+    mc11s_conv_mode_status_t conv_mode_val;
+    // Step 1: Get Conversion mode and Stop Conversion 
+    ret = mc11s_conv_mode_status_get(ctx, &conv_mode_val);
+    ret += mc11s_conv_mode_status_set(ctx, MC11S_STOP_CONV);
 
     // Step 2a: get ch0 & ch1 data
     uint16_t data_ch0, data_ch1;
@@ -1100,6 +1102,7 @@ int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
     ret += mc11s_data_ch0_get(ctx, &data_ch0);
 
     ret += mc11s_data_ch1_get(ctx, &data_ch1);
+
 
     // Step 2b: get Fin_div
     //uint16_t Fin_div;
@@ -1164,17 +1167,22 @@ int32_t mc11s_capacitance_get(stmdev_ctx_t *ctx, float *Cref, float *Csensor) {
             break;
     }
 
-    // Step 3: Calculate Cref
+    // Step 3: Calculate Channel 1 capacitance
     // C = k * Idrv /(data_chx * Fin_div * (Fclk /(Fref_div + 1))/ RCNT)
-    *Cref = (float) (K * Idrv / (data_ch1 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
+    *C_ch1 = (float) (K * Idrv / (data_ch1 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
 
-    // Step 4: Calculate Csensor
+    // Step 3a: Calculate Channel 0 capacitance
     //*Csensor = (float) (K * Idrv / (data_ch0 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
 
+    // Step 4: Get Coef fix for the values
     float Coef_fix;
     ret += mc11s_coef_fix_get(ctx, data_ch0, data_ch1, &Coef_fix);
 
-    *Csensor = (data_ch1 / data_ch0) * (*Cref) * Coef_fix;
+    // Step 5: Calculate Channel 0 capacitance
+    *C_ch0 = (data_ch1 / data_ch0) * (*C_ch1) * Coef_fix;
+
+    // Step 6: Set the conversion mode to previous value
+    ret += mc11s_conv_mode_status_set(ctx, conv_mode_val);
 
     return ret;
 }

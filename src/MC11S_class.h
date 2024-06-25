@@ -36,7 +36,7 @@ version 0.1
 
 // define a standard i2c address (7 bit) macro
 
-#define MC11S_I2C_ADDRESS (MC11S_I2C_ADD >> 1)
+#define MC11S_I2C_ADDRESS 		(MC11S_I2C_ADD >> 1)
 
 class MC11S {
 	public:
@@ -104,7 +104,7 @@ class MC11S {
 		int32_t setGlitchFilter(mc11s_glitch_filter_status_t val);	// Sets Glitch Filter Enable bit
 		int32_t getGlitchFilter(mc11s_glitch_filter_status_t *val);	// Returns Glitch Filter Enable bit
 
-		int32_t getCapacitance(float *Cref, float *Csensor);		// Calculates Capacitance of Channel 0 & 1
+		int32_t getCapacitance(float *val0, float *val1);		// Calculates Capacitance of Channel 0 & 1
 		int32_t getCoef(uint16_t val0, uint16_t val1, float *val2);	// Returns the Coef fix for the given data channel ratio
 
         int32_t writeFunctionConfiguration(uint8_t addr, uint8_t *data, uint8_t len); // Write interface definition

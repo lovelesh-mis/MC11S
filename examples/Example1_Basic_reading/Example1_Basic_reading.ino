@@ -36,11 +36,9 @@
 #include "MC11S_Arduino_Library.h"
 #include <Wire.h>
 
-MC11S_I2C mySensor;
+#define DEBUG
 
-// Values to fill with presence and motion data
-uint16_t ch0_data = 0;
-int16_t ch1_data = 0;
+MC11S_I2C mySensor;
 
 void setup()
 {
@@ -54,7 +52,8 @@ void setup()
       while(1);
     }
 
-    delay(1000);
+    mySensor.reset();
+    delay(500);
 }
 
 void loop()
@@ -76,12 +75,18 @@ void loop()
         uint16_t data_ch0, data_ch1;
 
         mySensor.getCh0Data(&data_ch0);
+        Serial.println("Ch0 Data: " + String(data_ch0));
 
         mySensor.getCh1Data(&data_ch1);
+        Serial.println("Ch1 Data: " + String(data_ch1));
+        delay(200);
 
         // Step 2b: get Fin_div
         mc11s_fin_div_val_t Fin_div_val;
         mySensor.getFinDiv(&Fin_div_val);
+
+        Serial.println("Fin Div: " + String(Fin_div_val));
+        delay(200);
 
         if (Fin_div_val > MC11S_FIN_DIV_256)
             Fin_div_val = MC11S_FIN_DIV_256;
@@ -89,12 +94,14 @@ void loop()
         //Fin_div = 2 ^ Fin_div_val;
 
         // Step 2c: get Fclk
-        uint32_t Fclk = 2400000;    // 2.4 MHz CLK
+        uint32_t Fclk = 2400000;    // 2.4 MHz CLK based on datasheet
 
         // Step 2d: get Fref_div
         uint16_t Fref_div;
 
         mySensor.getFrefDiv((uint8_t*) &Fref_div);
+        Serial.println("Fref: " + String(Fref_div + 1));
+        delay(200);
 
         //Fref_div = Fref_div + 1;    // Fref value from 1 to 256
 
@@ -102,6 +109,8 @@ void loop()
         uint16_t rcnt;
 
         mySensor.getRcnt(&rcnt);
+        Serial.println("RCNT: " + String(rcnt));
+        delay(200);
 
         // Step 2f: get Idrv
         uint16_t Idrv;
@@ -141,18 +150,29 @@ void loop()
                 break;
         }
 
+        Serial.println("Idrv: " + String(Idrv));
+        delay(200);
+
         // Step 3: Calculate Cref
         // C = k * Idrv /(data_chx * Fin_div * (Fclk /(Fref_div + 1))/ RCNT)
         float Cref, Csensor;
         Cref = (float) (K * Idrv / (data_ch1 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
-        Serial.println("Cref: " + String(Cref));
+        Serial.println("Cref: " + String(Cref) + " pF");
 
         // Step 4: Calculate Csensor
         Csensor = (float) (K * Idrv / (data_ch0 * (2 ^ Fin_div_val) * (Fclk / (Fref_div + 1)) / rcnt));
-        Serial.println("Csensor: " + String(Csensor));
+        Serial.println("Csensor: " + String(Csensor) + " pF");
 
         // Step 5: start new conversion cycle
-        mySensor.setConvMode(MC11S_CONT_CONV);  // MC11S_SINGLE_CONV
+        mySensor.setConvMode(MC11S_CONT_CONV); 
+
+        float voltage = (analogRead(A2) * 5.0) / 1023;
+        Serial.println("Voltage: " + String(voltage) + " mV");
+        float temp = (-560.0 * voltage) + 386.3;
+
+        Serial.println("Temp: " + String(temp) + " C");
    } 
+   Serial.println("------------------------");
+   delay(2000);
 }
 

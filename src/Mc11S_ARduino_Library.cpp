@@ -1,5 +1,5 @@
 #include "MC11S_Arduino_Library.h"
-
+#include <Arduino.h>
 
 // namespace mc11s {
 
@@ -51,7 +51,7 @@ int32_t MC11S_I2C::read(void* device, uint8_t addr, uint8_t* data, uint16_t numD
             bFirstInter = false;
         }
 
-        if (((MC11S_I2C*)device)->_i2cPort->endTransmission() != 0)
+        if (((MC11S_I2C*)device)->_i2cPort->endTransmission(false) != 0)
             return -1; // error with the end transmission
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
@@ -62,13 +62,21 @@ int32_t MC11S_I2C::read(void* device, uint8_t addr, uint8_t* data, uint16_t numD
         // No data returned, no dice
         if (nReturned == 0)
             return -1; // error
-
+#ifdef DEBUG
+        Serial.print("I2C Data: ");
+#endif
         // Copy the retrieved data chunk to the current index in the data segment
         for (i = 0; i < nReturned; i++)
         {
-            *data++ = ((MC11S_I2C*)device)->_i2cPort->read();
+            uint8_t temp = ((MC11S_I2C*)device)->_i2cPort->read(); 
+            *data++ = temp;
+#ifdef DEBUG
+            Serial.print(temp, HEX);
+#endif
         }
-
+#ifdef DEBUG
+        Serial.println("");
+#endif
         // Decrement the amount of data recieved from the overall data request
         // amount
         numData = numData - nReturned;

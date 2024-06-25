@@ -27,6 +27,7 @@ THE SOFTWARE.
 version 0.1
 */
 
+#include <Arduino.h>
 #include "mc11s_class.h"
 
 // #define SPI_READ 0x80
@@ -424,8 +425,8 @@ int32_t MC11S::getGlitchFilter(mc11s_glitch_filter_status_t *val) {
 
 /**
  * @brief  			Calculates capacitance of ref and sensor
- * @param	val0	Reference Capacitor	value
- * @param	val1	Sensor Capacitance Value
+ * @param	val0	Channel 0 Capacitor	value
+ * @param	val1	Channel 1 Capacitance Value
  * @retval  		Error code (0 -> no Error)
  */
 int32_t MC11S::getCapacitance(float *val0, float *val1) {
